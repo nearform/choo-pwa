@@ -1,0 +1,14 @@
+{
+  "name": "test",
+  "short_name": "test",
+  "description": "test",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000",
+  "theme_color": "#000",
+  "icons": [{
+    "src": "/assets/icon.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }]
+}
