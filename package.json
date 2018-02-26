@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "bankai build index.js",
+    "build": "node build.js && build:sw",
+    "build:sw": "workbox generate:sw",
+
     "create": "choo-scaffold",
     "inspect": "bankai inspect index.js",
     "start": "bankai start index.js",
@@ -13,14 +15,21 @@
   "dependencies": {
     "choo": "^6.8.0",
     "choo-service-worker": "^2.4.0",
-    "sheetify": "^7.2.0",
+    "cors": "^2.8.4",
+    "fastify": "^1.0.0-rc.2",
+    "fastify-plugin": "^0.2.2",
+    "lokijs": "^1.5.3",
+    "rss-parser": "^3.1.1",
     "tachyons": "^4.9.1"
   },
   "devDependencies": {
-    "bankai": "^9.6.1",
+    "budo": "^11.1.7",
     "choo-devtools": "^2.3.3",
     "choo-scaffold": "^1.1.2",
     "dependency-check": "^3.0.0",
-    "standard": "^10.0.3"
+    "sheetify": "^7.2.0",
+    "split-require": "^2.1.3",
+    "standard": "^10.0.3",
+    "workbox-cli": "^2.1.2"
   }
 }
