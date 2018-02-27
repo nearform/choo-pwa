@@ -11,7 +11,7 @@ function router (routes, loading) {
   }
 
   return (state, emit) => {
-    const component = _router.emit(state.router.url)
+    const component = _router.emit(window.location.pathname) // state.router.url)
     return component(state, emit)
   }
 }
@@ -54,14 +54,22 @@ function loadComponent (getComponent) {
   }
 }
 
+function loadModule (path, getModule) {
+  return (...args) => async (state, emit) => {
+    const component = await getModule(...args)
+    emit('router:loadModule', path)
+    return component(state, emit)
+  }
+}
+
 function loadCSS (path) {
   return (...args) => (state, emit) => {
-    console.log('TODO: loadCSS')
+    emit('router:loadCSS', path)
   }
 }
 
 /**
- * Decorates `fn` so that it's only called when args are different from last call 
+ * Decorates `fn` so that it's only called when args are different from last call
  */
 function loadData (fn, noop = () => {}) {
   let _lastHash
@@ -81,5 +89,6 @@ module.exports = {
   loader,
   loadCSS,
   loadData,
+  loadModule,
   loadComponent
 }

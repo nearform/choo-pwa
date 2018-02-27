@@ -10,17 +10,15 @@ function articles (state, emitter) {
     if (state.articles.category !== payload.category) {
       console.log('something weird happened')
     }
-    state.articles = {
-      ...state.articles,
+    state.articles = Object.assign({}, state.articles, {
       data: [
         ...state.articles.data,
         ...payload.data
       ],
       page: payload.page
-    }
+    })
     emitter.emit('render')
   })
 }
 
 module.exports = articles
-

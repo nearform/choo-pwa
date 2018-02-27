@@ -1,15 +1,18 @@
 const html = require('choo/html')
 const { async } = require('./utils')
 
-const spinner = require('./views/components/spinner')
+// const spinner = require('./views/components/spinner')
 
-function layout(children) {
+/*
+<!DOCTYPE html>
+*/
+
+function layout (children) {
   return (state, emit) => html`
-    <!DOCTYPE html>
     <html>
       <head>
-        ${state.assets.js.map(script => html`<script src="${script.src}" />`)}
-        ${state.assets.css.map(link => html`<link href="${script.href}" rel="stylesheet" />`)}
+        ${state.assets.script.map(script => html`<script src="${script}" />`)}
+        ${state.assets.css.map(link => html`<link href="${link}" rel="stylesheet" />`)}
       </head>
       <body>
         <header class="bg-white black-80 tc pv4 avenir">
@@ -25,7 +28,6 @@ function layout(children) {
           </nav>
         </header>
         <main>
-          ${state.loading ? spinner()(state, emit) : ''}
           ${children(state, emit)}
         </main>
       </body>

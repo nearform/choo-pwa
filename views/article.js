@@ -1,11 +1,11 @@
 const css = require('sheetify')
 const html = require('choo/html')
 
-const prefix = css`
-  :host {
-    background-color: blue;
-  }
-`
+// const prefix = css`
+//   :host {
+//     background-color: blue;
+//   }
+// `
 
 const article = ({ article = {} }, emit) => html`
   <article class="mw7 center avenir">

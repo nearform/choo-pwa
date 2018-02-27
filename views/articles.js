@@ -3,15 +3,15 @@ const html = require('choo/html')
 
 const river = require('./components/river')
 
-const prefix = css`
-  :host {
-    background-color: blue;
-  }
-`
+// const prefix = css`
+//   :host {
+//     background-color: blue;
+//   }
+// `
 
-async function loadMore(state, emit) {
+async function loadMore (state, emit) {
   const { category, page } = state.articles
-  const response = await fetch(`http://localhost:3000/api/articles/${category}?page=${page+1}`)
+  const response = await fetch(`http://localhost:3000/api/articles/${category}?page=${page + 1}`)
   const data = await response.json()
   emit('articles:loadMore', data)
 }

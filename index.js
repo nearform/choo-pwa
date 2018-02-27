@@ -11,10 +11,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const homeStore = require('./stores/home')
+const routerStore = require('./stores/router')
 const articleStore = require('./stores/article')
 const articlesStore = require('./stores/articles')
 
 app.use(homeStore)
+app.use(routerStore)
 app.use(articleStore)
 app.use(articlesStore)
 
@@ -27,7 +29,7 @@ const routes = {
   '/': require('./views/home.loader'),
   '/about/:id': require('./views/about.loader'),
   '/category/:category': require('./views/articles.loader'),
-  '/article/:slug': require('./views/article.loader'),
+  '/article/:slug': require('./views/article.loader')
 }
 
 app.route('*',
@@ -42,7 +44,7 @@ app.route('*',
 if (module.parent) {
   module.exports = app
 } else {
-  app.mount('body')
+  app.mount('html')
 
   // Register service worker
   if (window.navigator && 'serviceWorker' in navigator) {
@@ -50,7 +52,7 @@ if (module.parent) {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js')
         console.log('SW registered:', registration)
-      } catch(error) {
+      } catch (error) {
         console.log('SW registration failed:', error)
       }
     })
