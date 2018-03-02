@@ -1,60 +1,95 @@
-const css = require('sheetify')
 const choo = require('choo')
-const html = require('choo/html')
+const css = require('sheetify')
 
-css('tachyons')
-
-const app = choo()
-
-if (process.env.NODE_ENV !== 'production') {
-  app.use(require('choo-devtools')())
-}
-
-const homeStore = require('./stores/home')
-const routerStore = require('./stores/router')
-const articleStore = require('./stores/article')
-const articlesStore = require('./stores/articles')
-
-app.use(homeStore)
-app.use(routerStore)
-app.use(articleStore)
-app.use(articlesStore)
-
-// --
-
+const html = require('./views/html')
 const layout = require('./layout')
 const { router, async } = require('./utils')
 
-const routes = {
-  '/': require('./views/home.loader'),
-  '/about/:id': require('./views/about.loader'),
-  '/category/:category': require('./views/articles.loader'),
-  '/article/:slug': require('./views/article.loader')
+css('tachyons')
+
+const isBrowser = typeof window !== 'undefined'
+
+// --
+
+const home = require('./views/home.loader')
+const about = require('./views/about.loader')
+const article = require('./views/article.loader')
+const category = require('./views/articles.loader')
+
+function loader(child) {
+  let _resolved = null
+  let _loading = 'loading'
+
+  if (!isBrowser) {
+    return child
+  }
+
+  return async (state, emit) => {
+    if (_resolved) {
+      const result = _resolved
+      _resolved = null
+      return result
+    } else {
+      child(state, emit).then(resolved => {
+        _resolved = resolved
+        _loading = resolved
+        emit('render', 'loader')
+      })
+      return _loading
+    }
+  }
 }
 
-app.route('*',
-  layout(
-    async(
-      router(routes),
-      () => html`<h3>Loading app</h3>`
-    )
-  )
-)
+function main() {
+  const app = choo()
 
-if (module.parent) {
-  module.exports = app
-} else {
-  app.mount('html')
+  if (process.env.NODE_ENV !== 'production') {
+    app.use(require('choo-devtools')())
+  }
+
+  app.use(require('./stores/router'))
+  app.use(require('./stores/assets'))
+
+  app.use(require('./stores/home'))
+  app.use(require('./stores/article'))
+  app.use(require('./stores/articles'))
+
+  app.use((state, emiiter) => emiiter.on('render', payload => console.log('RENDER', payload)))
+
+  const body = layout(
+    // loader(
+      router({
+        '/': home(),
+        '/about': about(),
+        '/article/:slug': article(),
+        '/category/:category': category()
+      })
+    // )
+  )
+  
+  app.render(html(body))
+
+  return app
+}
+
+if (isBrowser) {
+  console.log(window.__initialState__)
+  const app = main()
+  app.mount('html', window.__initialState__)
 
   // Register service worker
   if (window.navigator && 'serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js')
-        console.log('SW registered:', registration)
-      } catch (error) {
-        console.log('SW registration failed:', error)
-      }
-    })
+    // window.addEventListener('load', async () => {
+    //   try {
+    //     const registration = await navigator.serviceWorker.register('/sw.js')
+    //     console.log('SW registered:', registration)
+    //   } catch (error) {
+    //     console.log('SW registration failed:', error)
+    //   }
+    // })
   }
 }
+
+module.exports = main
+
+

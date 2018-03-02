@@ -17,21 +17,23 @@
     "cors": "^2.8.4",
     "fastify": "^1.0.0-rc.2",
     "fastify-plugin": "^0.2.2",
+    "fastify-static": "^0.8.0",
     "lokijs": "^1.5.3",
+    "node-fetch": "^2.0.0",
     "rss-parser": "^3.1.1",
-    "tachyons": "^4.9.1"
+    "tachyons": "^4.9.1",
+    "watchify-server": "^1.0.2"
   },
   "devDependencies": {
+    "bankai": "^9.7.2",
     "browserify": "^16.1.0",
-    "budo": "^11.1.7",
     "choo-devtools": "^2.3.3",
     "choo-scaffold": "^1.1.2",
-    "css-extract": "^1.2.0",
-    "dependency-check": "^3.0.0",
+    "serves": "^1.1.1",
     "sheetify": "^7.2.0",
     "split-require": "^3.0.1",
     "standard": "^10.0.3",
-    "watchify-server": "^1.0.2",
+    "watchify": "^3.10.0",
     "workbox-cli": "^2.1.2"
   }
 }

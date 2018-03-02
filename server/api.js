@@ -41,6 +41,7 @@ async function routes (fastify, options) {
   fastify.get('/api/article/:slug', async (request, reply) => {
     try {
       const { slug } = request.params
+      await new Promise(resolve => setTimeout(resolve, 2000))
       return articles.findOne({ slug })
     } catch (error) {
       console.log(error)

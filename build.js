@@ -1,93 +1,128 @@
-// const budo = require('budo')
-const browserify = require('browserify')
-const sheetify = require('sheetify')
-const splitRequire = require('split-require')
-const cssExtract = require('css-extract')
-const path = require('path')
-
-const watchifyServer = require('watchify-server')
-
-const staticModule = require('static-module')
-const from2 = require('from2-string')
-const through = require('through2')
-const bl = require('bl')
 const fs = require('fs')
+const path = require('path')
+const watchify = require('watchify')
+const sheetify = require('sheetify')
+const browserify = require('browserify')
+const splitRequire = require('split-require')
 
-const b = browserify('./index.js')
+const bl = require('bl')
+const through = require('through2')
+const from2 = require('from2-string')
+const staticModule = require('static-module')
 
+const b = browserify({
+  entries: './index.js',
+  cache: {},
+  packageCache: {}
+})
+
+b.plugin(watchify)
 b.transform(sheetify)
 b.plugin(splitRequire, {
-  public: '/dist',
   out: 'dist',
-  filename: entry => {
-    console.log(entry.file)
-    return path.parse(entry.file).base
-  }
+  public: '/assets/',
+  filename: entry => path.parse(entry.file).base
 })
-
 b.on('split.pipeline', function (pipeline, entry, basename) {
   const outFile = __dirname + '/dist/' + basename.replace('.js', '.css')
-  console.log(outFile)
-  addHooks()
+  console.log('split', outFile)
+  cssExtract(pipeline.get('pack'), outFile)
+})
 
-  function addHooks () {
-    const extractStream = through.obj(write, flush)
-    const writeStream = (typeof outFile === 'function')
-      ? outFile()
-      : bl(writeComplete)
+b.on('bundle', function (bundle) {
+  const outFile = __dirname + '/dist/index.css'
+  console.log('bundle', outFile)
+  cssExtract(b.pipeline.get('pack'), outFile)
+})
 
-    // run before the "label" step in browserify pipeline
-    pipeline.get('pack').unshift(extractStream)
+// bundling
 
-    function write (chunk, enc, cb) {
-      // Performance boost: don't do ast parsing unless we know it's needed
-      if (!/[insert\-css|sheetify\/insert]/.test(chunk.source)) {
-        return cb(null, chunk)
-      }
+b.on('update', bundle)
 
-      var source = from2(chunk.source)
-      var sm = staticModule({
-        'insert-css': function (src) {
-          writeStream.write(String(src) + '\n')
-          return from2('null')
-        },
-        'sheetify/insert': function (src) {
-          writeStream.write(String(src) + '\n')
-          return from2('null')
-        }
-      })
+bundle()
 
-      source.pipe(sm).pipe(bl(complete))
+function bundle() {
+  b.bundle().pipe(fs.createWriteStream('./dist/index.js'));
+}
 
-      function complete (err, source) {
-        if (err) return extractStream.emit('error', err)
-        chunk.source = String(source)
-        cb(null, chunk)
-      }
+// --
+
+// const serves = require('serves')
+
+// serves({
+//   cwd: process.cwd(),
+//   root: 'dist',
+//   entry: 'index.js',
+//   title: 'My Site'
+// }, function (err, ev) {
+//   if (err) throw err
+//   console.log('Listening on', ev.url)
+// })
+
+// const watchifyServer = require('watchify-server')
+
+// watchifyServer(b, {
+//   entry: './dist/index.js',
+//   dir: __dirname + '/dist',
+//   cwd: __dirname + '/dist',
+//   root: 'dist',
+//   port: 8000
+// }, (err, event) => {
+//   console.log('Server running on 8000')
+// })
+
+require('./server')
+
+// 
+
+function cssExtract (handle, outFile) {
+  const extractStream = through.obj(write, flush)
+  const writeStream = (typeof outFile === 'function')
+    ? outFile()
+    : bl(writeComplete)
+
+  // run before the "label" step in browserify pipeline
+  handle.unshift(extractStream)
+
+  function write (chunk, enc, cb) {
+    // Performance boost: don't do ast parsing unless we know it's needed
+    if (!/[insert\-css|sheetify\/insert]/.test(chunk.source)) {
+      return cb(null, chunk)
     }
 
-    // close stream and signal end
-    function flush (cb) {
-      writeStream.end()
-      cb()
-    }
+    var source = from2(chunk.source)
+    var sm = staticModule({
+      'insert-css': function (src) {
+        writeStream.write(String(src) + '\n')
+        return from2('null')
+      },
+      'sheetify/insert': function (src) {
+        writeStream.write(String(src) + '\n')
+        return from2('null')
+      }
+    })
 
-    function writeComplete (err, buffer) {
+    source.pipe(sm).pipe(bl(complete))
+
+    function complete (err, source) {
       if (err) return extractStream.emit('error', err)
-      fs.writeFileSync(outFile, buffer)
+      chunk.source = String(source)
+      cb(null, chunk)
     }
   }
-})
 
-watchifyServer(b, {
-  entry: './dist/index.js',
-  dir: __dirname + '/dist',
-  cwd: __dirname + '/dist',
-  root: 'dist',
-  port: 8000
-}, (err, event) => {
-  console.log('Server running on 8000')
-})
+  // close stream and signal end
+  function flush (cb) {
+    writeStream.end()
+    cb()
+  }
+
+  function writeComplete (err, buffer) {
+    if (err) return extractStream.emit('error', err)
+    fs.writeFileSync(outFile, buffer)
+  }
+}
+
 
 // budo('./index.js', {
 //   live: true,

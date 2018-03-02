@@ -6,12 +6,12 @@ const nanorouter = require('nanorouter')
 function router (routes, loading) {
   const _router = nanorouter()
 
-  for (const [ path, component ] of Object.entries(routes)) {
-    _router.on(path, params => component(params))
+  for (const [ path, fn ] of Object.entries(routes)) {
+    _router.on(path, params => fn(params))
   }
 
   return (state, emit) => {
-    const component = _router.emit(window.location.pathname) // state.router.url)
+    const component = _router.emit(state.router.href)
     return component(state, emit)
   }
 }
@@ -19,52 +19,81 @@ function router (routes, loading) {
 /**
  * Resolves async component
  */
+
+let asyncID = 0
+
 function async (component, loading) {
   let _resolved
+  let _promise
   let _loading
+  const id = asyncID++
 
   return (state, emit) => {
     if (_resolved) {
       const result = _resolved
       _resolved = null
+      _promise = null
+      console.log(`async :: cleared ${id}`)
       return result
     } else {
-      component(state, emit).then(resolved => {
-        _resolved = resolved
-        _loading = resolved
-        emit('render')
-      })
+      if (!_promise) {
+        console.log(`async :: resolving component ${id}`)
+        _promise = component(state, emit).then(resolved => {
+          console.log(`async :: component resolved ${id}`)
+          _resolved = resolved
+          _loading = resolved
+          emit('render', 'async')
+        })
+        emit('async:promise', _promise)
+      } else {
+        console.log(`async :: still resolving component ${id}`)
+      }
       return _loading || loading(state, emit)
     }
   }
 }
 
 function loader (...fns) {
-  return (...args) => (state, emit) => {
+  return (...args) => async (state, emit) => {
     const components = fns.map(fn => fn(...args))
-    const results = components.map(component => component(state, emit))
+    const promises = components.map(component => component(state, emit))
+    const results = await Promise.all(promises)
     return results[0]
   }
 }
 
-function loadComponent (getComponent) {
-  return (...args) => async (state, emit) => {
-    const component = await getComponent(...args)
-    return component(state, emit)
-  }
-}
+// function asyncRoute (moduleFn, ...waitsFn) {
+//   return (...args) => async (state, emit) => {
+//     const component = moduleFn(...args)
+//     const waits = waitsFn.map(fn => fn(...args)(state, emit))
+//     await Promise.all(waits)
+//     await component(state, emit)
+//   }
+// }
+
+// asyncRoute(
+//   params => import('./foo'),
+//   params => async (state, emit) => await emit('loadData')
+//   params => async (state, emit) => await emit('loadCSS')
+// )
 
 function loadModule (path, getModule) {
   return (...args) => async (state, emit) => {
+    if (!state.assets.js.includes(path)) { 
+      console.log(`loadModule :: loading module ${path}`)
+      emit('assets:loadModule', path)
+    }
     const component = await getModule(...args)
-    emit('router:loadModule', path)
-    return component(state, emit)
+    return await component(state, emit)
   }
 }
 
 function loadCSS (path) {
-  return (...args) => (state, emit) => {
-    emit('router:loadCSS', path)
+  return (...args) => async (state, emit) => {
+    if (!state.assets.css.includes(path)) { 
+      console.log(`loadCSS :: loading CSS ${path}`)
+      emit('assets:loadCSS', path)
+    }
   }
 }
 
@@ -89,6 +118,5 @@ module.exports = {
   loader,
   loadCSS,
   loadData,
-  loadModule,
-  loadComponent
+  loadModule
 }

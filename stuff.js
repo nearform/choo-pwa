@@ -33,8 +33,8 @@ function FunctionPromise (origin) {
 
 // a.js
 
-const fn = async (foo, bar) => {
-  return await foo + '_' + await bar
+const fn = foobar => (foo, bar) => {
+  return foo + '_' + bar
 }
 
 //
@@ -42,6 +42,10 @@ const fn = async (foo, bar) => {
 const loader = new Promise(resolve => setTimeout(() => resolve(fn), 1000))
 
 const fnp = FunctionPromise(loader)
+
+
+await result = fnp('foobar')('foo1', 'bar1')
+
 
 fnp(
   fnp('foo1', 'bar1'),

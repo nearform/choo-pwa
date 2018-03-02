@@ -1,12 +1,16 @@
 const splitRequire = require('split-require')
-const { loader, loadCSS, loadData, loadComponent } = require('../utils')
+const { loader, loadCSS, loadData, loadModule } = require('../utils')
 
-const getAboutData = () => (state, emit) => {
-  console.log(`getAboutData :: DONE`)
+function about() {
+  const getAboutData = () => (state, emit) => {
+    console.log(`getAboutData :: DONE`)
+  }
+
+  return loader(
+    loadModule('/assets/about.js', () => new Promise(resolve => splitRequire('./about', (err, result) => resolve(result)))),
+    loadCSS('/assets/about.css'),
+    loadData(getAboutData),
+  )
 }
 
-module.exports = loader(
-  loadComponent(() => new Promise(resolve => splitRequire('./about', (err, result) => resolve(result)))),
-  loadData(getAboutData),
-  loadCSS('about.css')
-)
+module.exports = about

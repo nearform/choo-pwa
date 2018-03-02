@@ -1,9 +1,9 @@
 function articles (state, emitter) {
-  state.articles = []
+  state.articles = state.articles || []
 
   emitter.on('articles:load', payload => {
     state.articles = payload
-    emitter.emit('render')
+    emitter.emit('render', 'articles:load')
   })
 
   emitter.on('articles:loadMore', payload => {
@@ -17,7 +17,7 @@ function articles (state, emitter) {
       ],
       page: payload.page
     })
-    emitter.emit('render')
+    emitter.emit('render', 'articles:loadMore')
   })
 }
 
