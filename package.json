@@ -12,13 +12,16 @@
     "test-deps": "dependency-check . && dependency-check . --extra --no-dev -i tachyons"
   },
   "dependencies": {
-    "choo": "^6.8.0",
     "choo-service-worker": "^2.4.0",
     "cors": "^2.8.4",
     "fastify": "^1.0.0-rc.2",
     "fastify-plugin": "^0.2.2",
     "fastify-static": "^0.8.0",
     "lokijs": "^1.5.3",
+    "nanohref": "^3.0.1",
+    "nanolocation": "^1.0.0",
+    "nanoquery": "^1.2.0",
+    "nanorouter": "^3.0.1",
     "node-fetch": "^2.0.0",
     "rss-parser": "^3.1.1",
     "tachyons": "^4.9.1",

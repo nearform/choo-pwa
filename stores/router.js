@@ -2,7 +2,7 @@ const nanohref = require('nanohref')
 const nanoquery = require('nanoquery')
 const nanolocation = require('nanolocation')
 
-const EVENTS= {
+const EVENTS = {
   DOMCONTENTLOADED: 'DOMContentLoaded',
   DOMTITLECHANGE: 'DOMTitleChange',
   REPLACESTATE: 'replaceState',
@@ -16,9 +16,9 @@ var HISTORY_OBJECT = {}
 
 const isBrowser = typeof window !== 'undefined'
 
-function router(state, emitter) {
+function router (state, emitter) {
   state.router = state.router || {
-    href: nanolocation()
+    // href: nanolocation()
   }
 
   emitter.prependListener(EVENTS.NAVIGATE, function () {

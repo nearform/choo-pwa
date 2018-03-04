@@ -11,7 +11,7 @@ async function routes (fastify, options) {
         category: { type: 'string' }
       },
       querystring: {
-        page: { type: 'integer' },
+        page: { type: 'integer' }
       }
     }
   }
@@ -41,7 +41,7 @@ async function routes (fastify, options) {
   fastify.get('/api/article/:slug', async (request, reply) => {
     try {
       const { slug } = request.params
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise(resolve => setTimeout(resolve, 5000))
       return articles.findOne({ slug })
     } catch (error) {
       console.log(error)

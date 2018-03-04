@@ -62,24 +62,9 @@ function loader (...fns) {
   }
 }
 
-// function asyncRoute (moduleFn, ...waitsFn) {
-//   return (...args) => async (state, emit) => {
-//     const component = moduleFn(...args)
-//     const waits = waitsFn.map(fn => fn(...args)(state, emit))
-//     await Promise.all(waits)
-//     await component(state, emit)
-//   }
-// }
-
-// asyncRoute(
-//   params => import('./foo'),
-//   params => async (state, emit) => await emit('loadData')
-//   params => async (state, emit) => await emit('loadCSS')
-// )
-
 function loadModule (path, getModule) {
   return (...args) => async (state, emit) => {
-    if (!state.assets.js.includes(path)) { 
+    if (!state.assets.js.includes(path)) {
       console.log(`loadModule :: loading module ${path}`)
       emit('assets:loadModule', path)
     }
@@ -90,7 +75,7 @@ function loadModule (path, getModule) {
 
 function loadCSS (path) {
   return (...args) => async (state, emit) => {
-    if (!state.assets.css.includes(path)) { 
+    if (!state.assets.css.includes(path)) {
       console.log(`loadCSS :: loading CSS ${path}`)
       emit('assets:loadCSS', path)
     }
