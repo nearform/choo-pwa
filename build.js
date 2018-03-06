@@ -10,6 +10,9 @@ const through = require('through2')
 const from2 = require('from2-string')
 const staticModule = require('static-module')
 
+const PUBLIC_DIR = 'public'
+const ASSETS_DIR = 'assets'
+
 const b = browserify({
   entries: './index.js',
   cache: {},
@@ -19,18 +22,18 @@ const b = browserify({
 b.plugin(watchify)
 b.transform(sheetify)
 b.plugin(splitRequire, {
-  out: 'dist',
+  out: path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR),
   public: '/assets/',
   filename: entry => path.parse(entry.file).base
 })
 b.on('split.pipeline', function (pipeline, entry, basename) {
-  const outFile = __dirname + '/dist/' + basename.replace('.js', '.css')
+  const outFile = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, basename.replace('.js', '.css'))
   console.log('split', outFile)
   cssExtract(pipeline.get('pack'), outFile)
 })
 
 b.on('bundle', function (bundle) {
-  const outFile = __dirname + '/dist/index.css'
+  const outFile = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.css')
   console.log('bundle', outFile)
   cssExtract(b.pipeline.get('pack'), outFile)
 })
@@ -42,7 +45,7 @@ b.on('update', bundle)
 bundle()
 
 function bundle() {
-  b.bundle().pipe(fs.createWriteStream('./dist/index.js'));
+  b.bundle().pipe(fs.createWriteStream(path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.js')));
 }
 
 // --

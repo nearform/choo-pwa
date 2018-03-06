@@ -20,7 +20,7 @@ function parseArticle(item) {
     contributor: item.creator,
     category: item.categories[0].toLowerCase(),
     tout: {
-      src: 'http://localhost:3000/images?url=' + encodeURIComponent(item.content.match(/\<img.+?src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)[1]),
+      src: 'https://localhost:3000/images?url=' + encodeURIComponent(item.content.match(/\<img.+?src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)[1]),
       alt: ''
     },
     date: Date.parse(item.isoDate),

@@ -18,6 +18,7 @@
     "fastify-plugin": "^0.2.2",
     "fastify-static": "^0.8.0",
     "lokijs": "^1.5.3",
+    "mime": "^2.2.0",
     "nanohref": "^3.0.1",
     "nanolocation": "^1.0.0",
     "nanoquery": "^1.2.0",

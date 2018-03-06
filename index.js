@@ -16,7 +16,7 @@ const about = require('./views/about.loader')
 const article = require('./views/article.loader')
 const category = require('./views/articles.loader')
 
-function loader(child) {
+function loading(child) {
   let _resolved = null
   let _loading = 'loading'
 
@@ -57,12 +57,13 @@ function main() {
   app.use((state, emiiter) => emiiter.on('render', payload => console.log('RENDER', payload)))
 
   const body = layout(
-    // loader(
+    // loading(
       router({
         '/': home(),
         '/about': about(),
         '/article/:slug': article(),
-        '/category/:category': category()
+        '/category/:category': category(),
+        '/app-shell': () => () => {}
       })
     // )
   )
@@ -74,19 +75,20 @@ function main() {
 
 if (isBrowser) {
   console.log(window.__initialState__)
+  delete window.__initialState__.router
   const app = main()
   app.mount('html', window.__initialState__)
 
   // Register service worker
   if (window.navigator && 'serviceWorker' in navigator) {
-    // window.addEventListener('load', async () => {
-    //   try {
-    //     const registration = await navigator.serviceWorker.register('/sw.js')
-    //     console.log('SW registered:', registration)
-    //   } catch (error) {
-    //     console.log('SW registration failed:', error)
-    //   }
-    // })
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js')
+        console.log('SW registered:', registration)
+      } catch (error) {
+        console.log('SW registration failed:', error)
+      }
+    })
   }
 }
 

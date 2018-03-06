@@ -1,5 +1,15 @@
+const fs = require('fs')
+const path = require('path')
 const cors = require('cors')
-const fastify = require('fastify')()
+
+const fastify = require('fastify')({
+  http2: true,
+  https: {
+    allowHTTP1: true,
+    key: fs.readFileSync(path.join(__dirname, '..', 'https', 'fastify.key')),
+    cert: fs.readFileSync(path.join(__dirname, '..', 'https', 'fastify.crt'))
+  }
+})
 
 fastify.register(require('./db'))
 fastify.register(require('./api'))

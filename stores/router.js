@@ -18,7 +18,7 @@ const isBrowser = typeof window !== 'undefined'
 
 function router (state, emitter) {
   state.router = state.router || {
-    // href: nanolocation()
+    href: nanolocation()
   }
 
   emitter.prependListener(EVENTS.NAVIGATE, function () {
