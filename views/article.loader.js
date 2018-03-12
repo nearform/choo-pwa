@@ -1,64 +1,26 @@
+const https = require('https')
+const fetch = require('node-fetch')
 const splitRequire = require('split-require')
-const { loader, loadCSS, loadData, loadModule } = require('../utils')
 
-const isBrowser = typeof window !== 'undefined'
+const agent = new https.Agent({
+  rejectUnauthorized: false
+})
 
-function article () {
-  const getArticleData = ({ slug }) => (state, emit) => {
-    if (isBrowser) {
-      emit('article:load', slug)
-    } else {
-      return emit('article:load', slug)
-    }
+const getArticleData = async params => {
+  const response = await fetch(`https://localhost:3000/api/article/${params.slug}`, { agent })
+  return await response.json()
+}
+
+const importArticle = () => new Promise((resolve, reject) => splitRequire('./article', (err, bundle) => err ? reject(err) : resolve(bundle)))
+
+function article (app) {
+  return async (state, emit) => {
+    const [ bundle, data ] = await Promise.all([
+      app.bundles.loadBundle('./article', importArticle),
+      app.data.loadData('article', getArticleData, state.params)
+    ])
+    return bundle(data)
   }
-
-  return loader(
-    loadModule('/assets/article.js', () => new Promise(resolve => splitRequire('./article', (err, result) => resolve(result)))),
-    loadCSS('/assets/article.css'),
-    loadData(getArticleData)
-  )
 }
 
 module.exports = article
-
-// --
-
-// function article () {
-//   const article = loadModule('/assets/article.js', () => new Promise(resolve => splitRequire('./article', (err, result) => resolve(result)))),
-//   const loadArticleData = params => (state, emit) => emit('article:load', params.slug)
-//   return withData(loadArticleData, article)
-// }
-
-// module.exports = article
-
-// const isBrowser = typeof window !== 'undefined'
-
-// function different(fn, noop = () => {}) {
-//   let _lastHash
-//   return (...args) => {
-//     const hash = JSON.stringify(args)
-//     if (hash !== _lastHash) {
-//       _lastHash = hash
-//       return fn(...args)
-//     }
-//     return noop
-//   }
-// }
-
-// function withData(component, ...loaders) {
-//   loaders = loaders.map(loader => different(loader))
-
-//   return (...args) => async (state, emit) => {
-//     const promises = [
-//       component(...args)(state, emit)
-//       loader(...args)(state, emit)
-//     ]]
-
-//     if (isBrowser) {
-//       return await promises[0]
-//     }
-
-//     const results = await Promise.all(promises)
-//     return results[0]
-//   }
-// }

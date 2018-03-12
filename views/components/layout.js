@@ -1,14 +1,7 @@
-const html = require('choo/html')
-const { async } = require('./utils')
-
-// const spinner = require('./views/components/spinner')
-
-/*
-<!DOCTYPE html>
-*/
+const h = require('choo/html')
 
 function layout (children) {
-  return async (state, emit) => html`
+  return (state, emit) => h`
     <body>
       <header class="bg-white black-80 tc pv4 avenir">
         <h1 class="mt2 mb0 baskerville i fw1 f1">Amazing PWA</h1>
@@ -23,7 +16,7 @@ function layout (children) {
         </nav>
       </header>
       <main>
-        ${await children(state, emit)}
+        ${children(state, emit)}
       </main>
     </body>
   `

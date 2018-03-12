@@ -27,6 +27,8 @@ async function routes (fastify, options) {
         .limit(PAGE_SIZE)
         .data()
 
+        await new Promise(resolve => setTimeout(resolve, 5000))
+
       return {
         data,
         category,

@@ -11,12 +11,33 @@ const fastify = require('fastify')({
   }
 })
 
+fastify.use(cors())
+
 fastify.register(require('./db'))
 fastify.register(require('./api'))
 fastify.register(require('./images'))
-fastify.register(require('./page'))
+// fastify.register(require('./page'))
 
-fastify.use(cors())
+fastify.get('/favicon.ico', async () => {
+  return null
+})
+
+fastify.register(require('fastify-static'), {
+  root: path.join(__dirname, '../public/assets'),
+  prefix: '/assets/'
+})
+
+fastify.register(require('../plugins/choo-sw/fastify'), {
+  public: path.join(__dirname, '../public'),
+})
+
+fastify.register(require('../plugins/choo-ssr/fastify'), {
+  app: require('../index'),
+  public: path.join(__dirname, '../public'),
+  plugins: [
+    require('../plugins/choo-bundles/ssr')
+  ]
+})
 
 fastify.listen(3000, function (err) {
   if (err) {

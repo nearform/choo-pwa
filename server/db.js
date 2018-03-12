@@ -2,7 +2,7 @@ const loki = require('lokijs')
 const RSSParser = require('rss-parser')
 const fastifyPlugin = require('fastify-plugin')
 
-function slugify(text) {
+function slugify (text) {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
@@ -11,7 +11,9 @@ function slugify(text) {
     .replace(/-+$/, '')
 }
 
-function parseArticle(item) {
+function parseArticle (item) {
+  const src = item.content.match(/\<img.+?src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)
+
   return {
     hed: item.title,
     dek: item.contentSnippet.replace(/&\w+;/, '').split(' ').splice(0, 25).join(' ') + ' ...',
@@ -20,7 +22,7 @@ function parseArticle(item) {
     contributor: item.creator,
     category: item.categories[0].toLowerCase(),
     tout: {
-      src: 'https://localhost:3000/images?url=' + encodeURIComponent(item.content.match(/\<img.+?src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)[1]),
+      src: 'https://localhost:3000/images?url=' + encodeURIComponent(src && src[1]),
       alt: ''
     },
     date: Date.parse(item.isoDate),
@@ -28,7 +30,7 @@ function parseArticle(item) {
   }
 }
 
-async function setup() {
+async function setup () {
   const feeds = [
     'http://feeds.feedburner.com/TechCrunch/JohnBiggs',
     'http://feeds.feedburner.com/TechCrunch/MattBurns',
@@ -55,7 +57,7 @@ async function dbConnector (fastify, options) {
   const articles = db.addCollection('articles', { indices: ['slug'] })
 
   const data = await setup()
-  for(article of data) {
+  for (article of data) {
     articles.insert(article)
   }
 

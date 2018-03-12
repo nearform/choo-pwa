@@ -1,97 +1,54 @@
 const choo = require('choo')
 const css = require('sheetify')
 
-const html = require('./views/html')
-const layout = require('./layout')
-const { router, async } = require('./utils')
-
 css('tachyons')
 
-const isBrowser = typeof window !== 'undefined'
+const sw = require('./plugins/choo-sw')
+const ssr = require('./plugins/choo-ssr')
+const data = require('./plugins/choo-data')
+const bundles = require('./plugins/choo-bundles')
+const devtools = require('choo-devtools')
 
-// --
+const html = require('./views/components/html')
+const head = require('./views/components/head')
+const body = require('./views/components/body')
+const layout = require('./views/components/layout')
 
 const home = require('./views/home.loader')
 const about = require('./views/about.loader')
 const article = require('./views/article.loader')
-const category = require('./views/articles.loader')
+const category = require('./views/category.loader')
 
-function loading(child) {
-  let _resolved = null
-  let _loading = 'loading'
-
-  if (!isBrowser) {
-    return child
-  }
-
-  return async (state, emit) => {
-    if (_resolved) {
-      const result = _resolved
-      _resolved = null
-      return result
-    } else {
-      child(state, emit).then(resolved => {
-        _resolved = resolved
-        _loading = resolved
-        emit('render', 'loader')
-      })
-      return _loading
-    }
-  }
-}
-
-function main() {
+function main () {
   const app = choo()
 
-  if (process.env.NODE_ENV !== 'production') {
-    app.use(require('choo-devtools')())
-  }
+  app.use(sw())
+  app.use(ssr())
+  app.use(data())
+  app.use(bundles())
+  app.use(devtools())
 
-  app.use(require('./stores/router'))
-  app.use(require('./stores/assets'))
-
-  app.use(require('./stores/home'))
-  app.use(require('./stores/article'))
-  app.use(require('./stores/articles'))
-
-  app.use((state, emiiter) => emiiter.on('render', payload => console.log('RENDER', payload)))
-
-  const body = layout(
-    // loading(
-      router({
-        '/': home(),
-        '/about': about(),
-        '/article/:slug': article(),
-        '/category/:category': category(),
-        '/app-shell': () => () => {}
-      })
-    // )
+  const page = content => (
+    html(
+      head(
+        ssr.head(),
+        bundles.head()
+      ),
+      body(layout(content))
+    )
   )
-  
-  app.render(html(body))
+
+  app.route('/', page(home(app)))
+  app.route('/about/', page(about(app)))
+  app.route('/article/:slug', page(article(app)))
+  app.route('/category/:category', page(category(app)))
 
   return app
 }
 
-if (isBrowser) {
-  console.log(window.__initialState__)
-  delete window.__initialState__.router
+if (typeof window !== 'undefined') {
   const app = main()
-  app.mount('html', window.__initialState__)
-
-  // Register service worker
-  if (window.navigator && 'serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js')
-        console.log('SW registered:', registration)
-      } catch (error) {
-        console.log('SW registration failed:', error)
-      }
-    })
-  }
+  app.mount('html')
 }
 
 module.exports = main
-
-
