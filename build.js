@@ -19,7 +19,11 @@ const b = browserify({
   packageCache: {}
 })
 
-b.plugin(watchify)
+if (process.argv.includes('watch')) {
+  console.log('Watching files')
+  b.plugin(watchify)
+}
+
 b.transform(sheetify)
 b.plugin(splitRequire, {
   out: path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR),
@@ -28,13 +32,11 @@ b.plugin(splitRequire, {
 })
 b.on('split.pipeline', function (pipeline, entry, basename) {
   const outFile = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, basename.replace('.js', '.css'))
-  console.log('split', outFile)
   cssExtract(pipeline.get('pack'), outFile)
 })
 
 b.on('bundle', function (bundle) {
   const outFile = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.css')
-  console.log('bundle', outFile)
   cssExtract(b.pipeline.get('pack'), outFile)
 })
 
@@ -47,34 +49,6 @@ bundle()
 function bundle() {
   b.bundle().pipe(fs.createWriteStream(path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.js')));
 }
-
-// --
-
-// const serves = require('serves')
-
-// serves({
-//   cwd: process.cwd(),
-//   root: 'dist',
-//   entry: 'index.js',
-//   title: 'My Site'
-// }, function (err, ev) {
-//   if (err) throw err
-//   console.log('Listening on', ev.url)
-// })
-
-// const watchifyServer = require('watchify-server')
-
-// watchifyServer(b, {
-//   entry: './dist/index.js',
-//   dir: __dirname + '/dist',
-//   cwd: __dirname + '/dist',
-//   root: 'dist',
-//   port: 8000
-// }, (err, event) => {
-//   console.log('Server running on 8000')
-// })
-
-require('./server')
 
 // 
 
@@ -125,29 +99,3 @@ function cssExtract (handle, outFile) {
     fs.writeFileSync(outFile, buffer)
   }
 }
-
-
-// budo('./index.js', {
-//   live: true,
-//   cors: true,
-//   port: 8000,
-//   pushstate: true,
-//   base: '/',
-//   browserify: {
-//     transform: [
-//       sheetify
-//     ],
-//     plugin: [
-//       [splitRequire, { public: '/' }],
-//       [cssExtract, { out: 'bundle.css' }]
-//     ]
-//   }
-// })
-// .on('split.pipeline', function (pipeline, entry, basename) { console.log(arguments) })
-// .on('connect', function (ev) {
-//   console.log('Server running on %s', ev.uri)
-//   console.log('LiveReload running on port %s', ev.livePort)
-//   require('./server')
-// }).on('update', function (buffer) {
-//   console.log('bundle - %d bytes', buffer.length)
-// })

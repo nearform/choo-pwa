@@ -12,43 +12,50 @@ function slugify (text) {
 }
 
 function parseArticle (item) {
-  const src = item.content.match(/\<img.+?src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)
-
   return {
     hed: item.title,
-    dek: item.contentSnippet.replace(/&\w+;/, '').split(' ').splice(0, 25).join(' ') + ' ...',
-    date: item.pubDate,
+    dek: item.description, //contentSnippet.replace(/&\w+;/, '').split(' ').splice(0, 25).join(' ') + ' ...',
+    date: Date.parse(item.isoDate),
     slug: slugify(item.title),
     contributor: item.creator,
     category: item.categories[0].toLowerCase(),
     tout: {
-      src: 'https://localhost:3000/images?url=' + encodeURIComponent(src && src[1]),
+      src: 'https://localhost:3000/images?url=' + encodeURIComponent(item.thumbnail['$'].url),
       alt: ''
     },
-    date: Date.parse(item.isoDate),
     body: item.content
   }
 }
 
 async function setup () {
   const feeds = [
-    'http://feeds.feedburner.com/TechCrunch/JohnBiggs',
-    'http://feeds.feedburner.com/TechCrunch/MattBurns',
-    'http://feeds.feedburner.com/TechCrunch/MikeButcher',
-    'http://feeds.feedburner.com/TechCrunch/JoshConstine',
-    'http://feeds.feedburner.com/TechCrunch/JordanCrook',
-    'http://feeds.feedburner.com/TechCrunch/Kim-maiCutler',
-    'http://feeds.feedburner.com/TechCrunch/AnthonyHa',
-    'http://feeds.feedburner.com/TechCrunch/FredericLardinois',
-    'http://feeds.feedburner.com/TechCrunch/IngridLunden',
-    'http://feeds.feedburner.com/TechCrunch/NatashaLomas',
-    'http://feeds.feedburner.com/TechCrunch/SarahPerez'
+    'https://www.wired.com/feed/category/business/latest/rss',
+    'https://www.wired.com/feed/category/culture/latest/rss',
+    'https://www.wired.com/feed/category/gear/latest/rss',
+    'https://www.wired.com/feed/category/ideas/latest/rss',
+    'https://www.wired.com/feed/category/science/latest/rss',
+    // 'http://feeds.feedburner.com/TechCrunch/JordanCrook',
+    // 'http://feeds.feedburner.com/TechCrunch/Kim-maiCutler',
+    // 'http://feeds.feedburner.com/TechCrunch/AnthonyHa',
+    // 'http://feeds.feedburner.com/TechCrunch/FredericLardinois',
+    // 'http://feeds.feedburner.com/TechCrunch/IngridLunden',
+    // 'http://feeds.feedburner.com/TechCrunch/NatashaLomas',
+    // 'http://feeds.feedburner.com/TechCrunch/SarahPerez'
   ]
 
-  const parser = new RSSParser()
+  const parser = new RSSParser({
+    customFields: {
+      item: [
+        ['media:thumbnail', 'thumbnail'],
+      ]
+    }
+  })
 
   const promises = feeds.map(feed => parser.parseURL(feed).then(feed => feed.items.map(parseArticle)))
   const results = await Promise.all(promises)
+
+  // console.log(results)
+
   return results.reduce((acc, articles) => ([...acc, ...articles]), [])
 }
 

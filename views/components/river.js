@@ -1,9 +1,9 @@
+const h = require('../../plugins/choo-async/html')
 const css = require('sheetify')
-const html = require('choo/html')
 
-const river = (articles = []) => html`
+const river = (articles = []) => h`
   <div>
-    ${articles.map(article => html`
+    ${articles.map(article => h`
       <article class="bt bb b--black-10">
         <a class="db pv4 ph3 ph0-l no-underline black dim" href="/article/${article.slug}">
           <div class="flex flex-column flex-row-ns">

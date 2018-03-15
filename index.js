@@ -1,11 +1,10 @@
 const choo = require('choo')
 const css = require('sheetify')
 
-css('tachyons')
-
 const sw = require('./plugins/choo-sw')
 const ssr = require('./plugins/choo-ssr')
 const data = require('./plugins/choo-data')
+const async = require('./plugins/choo-async')
 const bundles = require('./plugins/choo-bundles')
 const devtools = require('choo-devtools')
 
@@ -19,8 +18,12 @@ const about = require('./views/about.loader')
 const article = require('./views/article.loader')
 const category = require('./views/category.loader')
 
+css('tachyons')
+
 function main () {
   const app = choo()
+
+  app.use(async())
 
   app.use(sw())
   app.use(ssr())

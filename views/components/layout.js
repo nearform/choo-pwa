@@ -1,4 +1,4 @@
-const h = require('choo/html')
+const h = require('../../plugins/choo-async/html')
 
 function layout (children) {
   return (state, emit) => h`
@@ -8,9 +8,9 @@ function layout (children) {
         <h2 class="mt2 mb0 f6 fw4 ttu tracked">The place to get amazing news</h2>
         <nav class="bt bb tc mw7 center mt4">
           <a class="f6 f5-l link bg-animate black-80 hover-bg-lightest-blue dib pa3 ph4-l" href="/">Home</a>
-          <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/tc">TC</a>
-          <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/apps">Apps</a>
-          <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/startups">Startups</a>
+          <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/business">Business</a>
+          <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/culture">Culture</a>
+          <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/gear">Gear</a>
           <a class="f6 f5-l link bg-animate black-80 hover-bg-light-green dib pa3 ph4-l" href="/category/gadgets">Gadgets</a>
           <a class="f6 f5-l link bg-animate black-80 hover-bg-light-pink dib pa3 ph4-l" href="/about">About</a>
         </nav>

@@ -1,4 +1,4 @@
-const h = require('choo/html')
+const h = require('../plugins/choo-async/html')
 const raw = require('choo/html/raw')
 
 const css = require('sheetify')

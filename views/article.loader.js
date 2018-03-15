@@ -2,6 +2,8 @@ const https = require('https')
 const fetch = require('node-fetch')
 const splitRequire = require('split-require')
 
+const { onChange } = require('../plugins/choo-data/utils')
+
 const agent = new https.Agent({
   rejectUnauthorized: false
 })
@@ -16,8 +18,8 @@ const importArticle = () => new Promise((resolve, reject) => splitRequire('./art
 function article (app) {
   return async (state, emit) => {
     const [ bundle, data ] = await Promise.all([
-      app.bundles.loadBundle('./article', importArticle),
-      app.data.loadData('article', getArticleData, state.params)
+      app.bundles.load('./article', importArticle),
+      app.data.load('article', getArticleData, onChange(state.params))
     ])
     return bundle(data)
   }

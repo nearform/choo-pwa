@@ -8,7 +8,7 @@ const isBrowser = typeof window !== 'undefined'
 
 function bundles() {
   return factory({
-    loadBundle: (state, emitter, app) => async filename => {
+    load: (state, emitter, app) => async filename => {
       emitter.emit('bundles:load', filename)
       const basedir = path.dirname(callsites()[1].getFileName())
       const bundle = await load(filename, basedir)

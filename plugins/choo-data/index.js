@@ -7,9 +7,9 @@ function data () {
     state.data = state.data || {}
 
     // Events
-    emitter.on('data:store', (name, params, data, opts = {}) => {
+    emitter.on('data:store', (name, change, data, opts = {}) => {
       state.data[name] = {
-        params: params,
+        change: change,
         data: data
       }
       opts.render && emitter.emit('render')
@@ -17,19 +17,22 @@ function data () {
 
     // Enhancements
     app.data = {
-      loadData: async (name, loader, params, opts = {}) => {
-        if (state.data[name] && equal(state.data[name].params, params)) {
-          return state.data[name].data
+      async load(name, loader, update, opts = {}) {
+        const store = state.data[name] || {}
+        const change = update(store.change)
+        if (!change) {
+          return store.data
         }
+        const promise = loader(change, store.data)
         if (isBrowser && !opts.blocking) {
           // non-blocking
-          loader(params).then(data => {
-            emitter.emit('data:store', name, params, data, { render: true })
+          promise.then(data => {
+            emitter.emit('data:store', name, change, data, { render: true })
           })
         } else {
           // blocking
-          const data = await loader(params)
-          emitter.emit('data:store', name, params, data)
+          const data = await promise
+          emitter.emit('data:store', name, change, data)
           return data
         }
       }

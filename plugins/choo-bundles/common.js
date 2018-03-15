@@ -26,7 +26,7 @@ function factory(impl) {
     // Enhancements
     app.bundles = {
       //loadBundle: impl.loadBundle(state, emitter, app)
-      loadBundle: async (filename, load) => {
+      load: async (filename, load) => {
         emitter.emit('bundles:load', filename)
         const bundle = await load(filename)
         return bundle

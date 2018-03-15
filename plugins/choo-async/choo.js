@@ -1,91 +1,15 @@
 var scrollToAnchor = require('scroll-to-anchor')
 var documentReady = require('document-ready')
-var nanolocation = require('nanolocation')
 var nanotiming = require('nanotiming')
-var nanorouter = require('nanorouter')
 var nanomorph = require('nanomorph')
-var nanoquery = require('nanoquery')
 var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
-var nanobus = require('nanobus')
 var assert = require('assert')
 var xtend = require('xtend')
 
-module.exports = Choo
-
 var HISTORY_OBJECT = {}
 
-function Choo (opts) {
-  if (!(this instanceof Choo)) return new Choo(opts)
-  opts = opts || {}
-
-  assert.equal(typeof opts, 'object', 'choo: opts should be type object')
-
-  var self = this
-
-  // define events used by choo
-  this._events = {
-    DOMCONTENTLOADED: 'DOMContentLoaded',
-    DOMTITLECHANGE: 'DOMTitleChange',
-    REPLACESTATE: 'replaceState',
-    PUSHSTATE: 'pushState',
-    NAVIGATE: 'navigate',
-    POPSTATE: 'popState',
-    RENDER: 'render'
-  }
-
-  // properties for internal use only
-  this._historyEnabled = opts.history === undefined ? true : opts.history
-  this._hrefEnabled = opts.href === undefined ? true : opts.href
-  this._hasWindow = typeof window !== 'undefined'
-  this._createLocation = nanolocation
-  this._loaded = false
-  this._stores = []
-  this._tree = null
-
-  // properties that are part of the API
-  this.router = nanorouter()
-  this.emitter = nanobus('choo.emit')
-  this.emit = this.emitter.emit.bind(this.emitter)
-
-  var events = { events: this._events }
-  if (this._hasWindow) {
-    this.state = window.initialState
-      ? xtend(window.initialState, events)
-      : events
-    delete window.initialState
-  } else {
-    this.state = events
-  }
-
-  // listen for title changes; available even when calling .toString()
-  if (this._hasWindow) this.state.title = document.title
-  this.emitter.prependListener(this._events.DOMTITLECHANGE, function (title) {
-    assert.equal(typeof title, 'string', 'events.DOMTitleChange: title should be type string')
-    self.state.title = title
-    if (self._hasWindow) document.title = title
-  })
-}
-
-Choo.prototype.route = function (route, handler) {
-  assert.equal(typeof route, 'string', 'choo.route: route should be type string')
-  assert.equal(typeof handler, 'function', 'choo.handler: route should be type function')
-  this.router.on(route, handler)
-}
-
-Choo.prototype.use = function (cb) {
-  assert.equal(typeof cb, 'function', 'choo.use: cb should be type function')
-  var self = this
-  this._stores.push(function () {
-    var msg = 'choo.use'
-    msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
-    var endTiming = nanotiming(msg)
-    cb(self.state, self.emitter, self)
-    endTiming()
-  })
-}
-
-Choo.prototype.start = async function () {
+module.exports.start = async function start () {
   assert.equal(typeof window, 'object', 'choo.start: window was not found. .start() must be called in a browser, use .toString() if running in Node')
 
   var self = this
@@ -128,10 +52,6 @@ Choo.prototype.start = async function () {
     }
   }
 
-  this._stores.forEach(function (initStore) {
-    initStore()
-  })
-
   this._matchRoute()
   this._tree = await this._prerender(this.state)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
@@ -160,7 +80,7 @@ Choo.prototype.start = async function () {
   return this._tree
 }
 
-Choo.prototype.mount = function mount (selector) {
+module.exports.mount = function mount (selector) {
   if (typeof window !== 'object') {
     assert.ok(typeof selector === 'string', 'choo.mount: selector should be type String')
     this.selector = selector
@@ -193,17 +113,12 @@ Choo.prototype.mount = function mount (selector) {
   })
 }
 
-Choo.prototype.toString = async function (location, state) {
-  this.state = xtend(this.state, state || {})
+module.exports.toString = async function toString (location, state) {
+  Object.assign(this.state, state || {})
 
   assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
-
-  // TODO: pass custom state down to each store.
-  this._stores.forEach(function (initStore) {
-    initStore()
-  })
 
   this._matchRoute(location)
   var html = await this._prerender(this.state)
@@ -212,25 +127,7 @@ Choo.prototype.toString = async function (location, state) {
   return typeof html.outerHTML === 'string' ? html.outerHTML : html.toString()
 }
 
-Choo.prototype._matchRoute = function (locationOverride) {
-  var location, queryString
-  if (locationOverride) {
-    location = locationOverride.replace(/\?.+$/, '')
-    queryString = locationOverride
-  } else {
-    location = this._createLocation()
-    queryString = window.location.search
-  }
-  var matched = this.router.match(location)
-  this.state.href = location
-  this.state.query = nanoquery(queryString)
-  this.state.route = matched.route
-  this.state.params = matched.params
-  this.state._handler = matched.cb
-  return this.state
-}
-
-Choo.prototype._prerender = async function (state) {
+module.exports._prerender = async function _prerender (state) {
   var routeTiming = nanotiming("choo.prerender('" + state.route + "')")
   var res = await state._handler(state, this.emit)
   routeTiming()
