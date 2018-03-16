@@ -1,5 +1,14 @@
 # Choo-PWA
-PWA build with Choo
+PWA build with Choo and Fastify
+
+Demo: https://choo-pwa.xyz
+
+Features:
+- Dynamic code splitting
+- Server side renderering
+- HTTP/2 push 
+- App shell model
+- Service worker with asset pre-caching
 
 ## Quick start
 
