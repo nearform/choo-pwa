@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node server",
-    "prebuild": "rm -rf public & mkdir public & mkdir public/assets",
+    "prebuild": "rm -rf public && mkdir -p public/assets",
     "build": "npm run build:js && npm run build:sw",
     "build:js": "node build.js",
     "build:sw": "workbox generate:sw",
@@ -42,5 +42,8 @@
     "through2": "^2.0.3",
     "watchify": "^3.10.0",
     "workbox-cli": "^2.1.2"
+  },
+  "engines": {
+    "node": "9.x.x"
   }
 }

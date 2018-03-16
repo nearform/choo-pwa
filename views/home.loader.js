@@ -10,7 +10,7 @@ const agent = new https.Agent({
 
 const getHomeData = async params => {
   const categories = ['business', 'culture', 'gear']
-  const promises = categories.map(category => fetch(`https://localhost:3000/api/articles/${category}`, { agent }).then(response => response.json()))
+  const promises = categories.map(category => fetch(`https://choo-pwa.xyz/api/articles/${category}`, { agent }).then(response => response.json()))
   return await Promise.all(promises)
 }
 

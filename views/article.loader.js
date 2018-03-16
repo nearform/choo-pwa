@@ -9,7 +9,7 @@ const agent = new https.Agent({
 })
 
 const getArticleData = async params => {
-  const response = await fetch(`https://localhost:3000/api/article/${params.slug}`, { agent })
+  const response = await fetch(`https://choo-pwa.xyz/api/article/${params.slug}`, { agent })
   return await response.json()
 }
 

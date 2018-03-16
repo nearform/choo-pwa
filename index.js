@@ -45,6 +45,7 @@ function main () {
   app.route('/about/', page(about(app)))
   app.route('/article/:slug', page(article(app)))
   app.route('/category/:category', page(category(app)))
+  app.route('/app-shell', page(() => {}))
 
   return app
 }

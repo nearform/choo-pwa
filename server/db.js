@@ -20,7 +20,7 @@ function parseArticle (item) {
     contributor: item.creator,
     category: item.categories[0].toLowerCase(),
     tout: {
-      src: 'https://localhost:3000/images?url=' + encodeURIComponent(item.thumbnail['$'].url),
+      src: 'https://choo-pwa.xyz/images?url=' + encodeURIComponent(item.thumbnail['$'].url),
       alt: ''
     },
     body: item.content

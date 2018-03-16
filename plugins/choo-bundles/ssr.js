@@ -31,7 +31,11 @@ function plugin(options) {
       return
     }
 
-    stream.pushStream({ [HTTP2_HEADER_PATH]: path }, pushStream => {
+    stream.pushStream({ [HTTP2_HEADER_PATH]: path }, (err, pushStream) => {
+      if (err) {
+        console.log(err)
+        return
+      }
       pushStream.respondWithFD(file.content, file.headers)
     })
   }

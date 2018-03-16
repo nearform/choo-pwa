@@ -1,4 +1,4 @@
-# PWA
+# Choo-PWA
 PWA build with Choo
 
 ## Quick start

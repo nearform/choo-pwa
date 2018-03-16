@@ -9,7 +9,7 @@ const agent = new https.Agent({
 })
 
 const getCategoryData = async ([ params, page ], oldData) => {
-  const response = await fetch(`https://localhost:3000/api/articles/${params.category}?page=${page}`, { agent })
+  const response = await fetch(`https://choo-pwa.xyz/api/articles/${params.category}?page=${page}`, { agent })
   const data = await response.json()
   if (!oldData || oldData.category !== params.category) {
     return data
