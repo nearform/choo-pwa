@@ -16,7 +16,6 @@ fastify.use(cors())
 fastify.register(require('./db'))
 fastify.register(require('./api'))
 fastify.register(require('./images'))
-// fastify.register(require('./page'))
 
 fastify.get('/favicon.ico', async () => {
   return null
@@ -44,10 +43,6 @@ fastify.listen(3000, '0.0.0.0', function (err) {
     console.log(err)
     process.exit(1)
   }
-
-  // const db = fastify.db
-  // const articles = db.getCollection('articles')
-  // console.log(articles.find())
 
   console.log(`server listening on ${fastify.server.address().port}`)
 })
