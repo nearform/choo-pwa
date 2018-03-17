@@ -1,16 +1,11 @@
-const https = require('https')
 const fetch = require('node-fetch')
 const splitRequire = require('split-require')
 
 const { onChange } = require('../plugins/choo-data/utils')
 
-const agent = new https.Agent({
-  rejectUnauthorized: false
-})
-
 const getHomeData = async params => {
   const categories = ['business', 'culture', 'gear']
-  const promises = categories.map(category => fetch(`https://choo-pwa.xyz/api/articles/${category}`, { agent }).then(response => response.json()))
+  const promises = categories.map(category => fetch(`https://choo-pwa.xyz/api/articles/${category}`).then(response => response.json()))
   return await Promise.all(promises)
 }
 

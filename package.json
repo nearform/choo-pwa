@@ -15,7 +15,7 @@
     "test-deps": "dependency-check . && dependency-check . --extra --no-dev -i tachyons"
   },
   "dependencies": {
-    "choo": "6.9.0",
+    "choo": "git://github.com/nearform/choo.git#async-render",
     "choo-service-worker": "^2.4.0",
     "cors": "^2.8.4",
     "deep-equal": "^1.0.1",
@@ -32,6 +32,7 @@
     "bl": "^1.2.1",
     "browserify": "^16.1.0",
     "choo-devtools": "^2.3.3",
+    "exorcist": "^1.0.1",
     "from2-string": "^1.1.0",
     "nodemon": "^1.17.2",
     "npm-run-all": "^4.1.2",
@@ -40,10 +41,11 @@
     "standard": "^10.0.3",
     "static-module": "^2.2.2",
     "through2": "^2.0.3",
+    "tinyify": "^2.4.0",
     "watchify": "^3.10.0",
     "workbox-cli": "^2.1.2"
   },
   "engines": {
-    "node": "9.x.x"
+    "node": "9.8.x"
   }
 }

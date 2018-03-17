@@ -4,7 +4,6 @@ const css = require('sheetify')
 const sw = require('./plugins/choo-sw')
 const ssr = require('./plugins/choo-ssr')
 const data = require('./plugins/choo-data')
-const async = require('./plugins/choo-async')
 const bundles = require('./plugins/choo-bundles')
 const devtools = require('choo-devtools')
 
@@ -23,13 +22,14 @@ css('tachyons')
 function main () {
   const app = choo()
 
-  app.use(async())
-
   app.use(sw())
   app.use(ssr())
   app.use(data())
   app.use(bundles())
-  app.use(devtools())
+
+  if (process.env.NODE_ENV !== 'production') {
+    app.use(devtools())
+  }
 
   const page = content => (
     html(

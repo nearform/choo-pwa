@@ -1,23 +1,17 @@
-const https = require('https')
 const fetch = require('node-fetch')
 const splitRequire = require('split-require')
 
 const { onChangeWith } = require('../plugins/choo-data/utils')
 
-const agent = new https.Agent({
-  rejectUnauthorized: false
-})
-
 const getCategoryData = async ([ params, page ], oldData) => {
-  const response = await fetch(`https://choo-pwa.xyz/api/articles/${params.category}?page=${page}`, { agent })
+  const response = await fetch(`https://choo-pwa.xyz/api/articles/${params.category}?page=${page}`)
   const data = await response.json()
   if (!oldData || oldData.category !== params.category) {
     return data
   } else {
-    return {
-      ...data,
+    return Object.assign({}, data, {
       data: [...oldData.data, ...data.data]
-    }
+    })
   }
 }
 

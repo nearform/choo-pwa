@@ -27,8 +27,6 @@ async function routes (fastify, options) {
         .limit(PAGE_SIZE)
         .data()
 
-        await new Promise(resolve => setTimeout(resolve, 1000))
-
       return {
         data,
         category,
@@ -43,7 +41,6 @@ async function routes (fastify, options) {
   fastify.get('/api/article/:slug', async (request, reply) => {
     try {
       const { slug } = request.params
-      await new Promise(resolve => setTimeout(resolve, 5000))
       return articles.findOne({ slug })
     } catch (error) {
       console.log(error)

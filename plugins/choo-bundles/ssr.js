@@ -31,6 +31,11 @@ function plugin(options) {
       return
     }
 
+    if (!stream) {
+      console.log('stream is undefined, weird')
+      return
+    }
+
     stream.pushStream({ [HTTP2_HEADER_PATH]: path }, (err, pushStream) => {
       if (err) {
         console.log(err)
