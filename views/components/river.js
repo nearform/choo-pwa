@@ -1,5 +1,8 @@
 const h = require('../../plugins/choo-async/html')
-const css = require('sheetify')
+
+function crop(url, aspect, width) {
+  return url.replace('/master/', `/${aspect}/`).replace('/pass/', `/w_${width}/`)
+}
 
 const river = (articles = []) => h`
   <div>
@@ -9,7 +12,7 @@ const river = (articles = []) => h`
           <div class="flex flex-column flex-row-ns">
             <div class="pr3-ns mb4 mb0-ns w-100 w-40-ns">
               <div class="aspect-ratio aspect-ratio--6x4">
-                <div class="aspect-ratio--object cover" style="background:url(${article.tout.src}) center;"></div>
+                <div class="aspect-ratio--object cover" style="background:url(${crop(article.tout.src, '6:4', '291')}) center;"></div>
               </div>
             </div>
             <div class="w-100 w-60-ns pl3-ns">
