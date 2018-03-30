@@ -2,7 +2,7 @@ const h = require('../../plugins/choo-async/html')
 
 function layout (children) {
   return (state, emit) => h`
-    <body>
+    <div>
       <header class="bg-white black-80 tc pv4 avenir">
         <h1 class="mt2 mb0 baskerville i fw1 f1">Amazing PWA</h1>
         <h2 class="mt2 mb0 f6 fw4 ttu tracked">The place to get amazing news</h2>
@@ -18,7 +18,7 @@ function layout (children) {
       <main>
         ${children(state, emit)}
       </main>
-    </body>
+    </div>
   `
 }
 

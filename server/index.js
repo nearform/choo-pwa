@@ -2,6 +2,12 @@ const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
 
+var PUBLIC_DIR = path.join(__dirname, '../public')
+var ASSETS_DIR = path.join(PUBLIC_DIR, 'assets')
+
+var MANIFEST = JSON.parse(fs.readFileSync(path.join(PUBLIC_DIR, 'manifest.json')))
+
+
 const fastify = require('fastify')({
   http2: true,
   https: {
@@ -22,20 +28,26 @@ fastify.get('/favicon.ico', async () => {
 })
 
 fastify.register(require('fastify-static'), {
-  root: path.join(__dirname, '../public/assets'),
+  root: ASSETS_DIR,
   prefix: '/assets/'
 })
 
 fastify.register(require('../plugins/choo-sw/fastify'), {
-  public: path.join(__dirname, '../public'),
+  public: PUBLIC_DIR,
 })
 
-fastify.register(require('../plugins/choo-ssr/fastify'), {
+fastify.register(require('choo-ssr/fastify'), {
   app: require('../index'),
-  public: path.join(__dirname, '../public'),
-  plugins: [
-    require('../plugins/choo-bundles/ssr')
-  ]
+  plugins: [[
+    require('choo-bundles/ssr'), {
+      public: PUBLIC_DIR,
+      manifest: MANIFEST,
+      assets: {
+        js: ['/assets/common.js'],
+        css: ['/assets/common.css']
+      }
+    }
+  ]]
 })
 
 fastify.listen(3000, '0.0.0.0', function (err) {

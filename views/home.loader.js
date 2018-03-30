@@ -1,6 +1,4 @@
 const fetch = require('node-fetch')
-const splitRequire = require('split-require')
-
 const { onChange } = require('../plugins/choo-data/utils')
 
 const getHomeData = async params => {
@@ -9,12 +7,10 @@ const getHomeData = async params => {
   return await Promise.all(promises)
 }
 
-const importHome = () => new Promise((resolve, reject) => splitRequire('./home', (err, bundle) => err ? reject(err) : resolve(bundle)))
-
 function home (app) {
   return async (state, emit) => {
     const [ bundle, data ] = await Promise.all([
-      app.bundles.load('./home', importHome),
+      app.bundles.load('./home'),
       app.data.load('home', getHomeData, onChange(state.params), { blocking: true })
     ])
     return bundle(data)
