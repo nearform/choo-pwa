@@ -1,6 +1,4 @@
 const fetch = require('node-fetch')
-const splitRequire = require('split-require')
-
 const { onChangeWith } = require('../plugins/choo-data/utils')
 
 const getCategoryData = async ([ params, page ], oldData) => {
@@ -15,12 +13,10 @@ const getCategoryData = async ([ params, page ], oldData) => {
   }
 }
 
-const importCategory = () => new Promise((resolve, reject) => splitRequire('./category', (err, bundle) => err ? reject(err) : resolve(bundle)))
-
 function category (app) {
   return async (state, emit) => {
     const [ bundle, data ] = await Promise.all([
-      app.bundles.load('./category', importCategory),
+      app.bundles.load('./category'),
       app.data.load('category', getCategoryData, onChangeWith(state.params, page => page || 0))
     ])
 

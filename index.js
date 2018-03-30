@@ -2,9 +2,9 @@ const choo = require('choo')
 const css = require('sheetify')
 
 const sw = require('./plugins/choo-sw')
-const ssr = require('./plugins/choo-ssr')
+const ssr = require('choo-ssr')
 const data = require('./plugins/choo-data')
-const bundles = require('./plugins/choo-bundles')
+const bundles = require('choo-bundles')
 const devtools = require('choo-devtools')
 
 const html = require('./views/components/html')
@@ -42,7 +42,7 @@ function main () {
   )
 
   app.route('/', page(home(app)))
-  app.route('/about/', page(about(app)))
+  app.route('/about', page(about(app)))
   app.route('/article/:slug', page(article(app)))
   app.route('/category/:category', page(category(app)))
   app.route('/app-shell', page(() => {}))
