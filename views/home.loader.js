@@ -1,5 +1,4 @@
 const fetch = require('node-fetch')
-const { onChange } = require('../plugins/choo-data/utils')
 
 const getHomeData = async params => {
   const categories = ['business', 'culture', 'gear']
@@ -11,7 +10,7 @@ function home (app) {
   return async (state, emit) => {
     const [ bundle, data ] = await Promise.all([
       app.bundles.load('./home'),
-      app.data.load('home', getHomeData, onChange(state.params), { blocking: true })
+      app.data.load('home', getHomeData, state.params, { blocking: true })
     ])
     return bundle(data)
   }

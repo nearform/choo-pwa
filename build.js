@@ -41,7 +41,7 @@ b.plugin(require('choo-bundles/browserify'), {
   output: path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR),
   manifest: path.resolve(__dirname, PUBLIC_DIR, 'manifest.json'),
   prefix: '/assets/',
-  // filename: entry => path.parse(entry.file).base
+  filename: entry => path.parse(entry.file).base
 })
 
 b.on('choo-bundles.pipeline', function (pipeline, entry, basename, manifest) {

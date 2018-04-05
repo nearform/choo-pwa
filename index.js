@@ -3,7 +3,7 @@ const css = require('sheetify')
 
 const sw = require('./plugins/choo-sw')
 const ssr = require('choo-ssr')
-const data = require('./plugins/choo-data')
+const data = require('choo-data')
 const bundles = require('choo-bundles')
 const devtools = require('choo-devtools')
 
@@ -33,11 +33,11 @@ function main () {
 
   const page = content => (
     html(
-      head(
-        ssr.head(),
-        bundles.head()
+      ssr.head(
+        ssr.state(),
+        bundles.assets()
       ),
-      body(layout(content))
+      ssr.body(layout(content))
     )
   )
 

@@ -42,10 +42,11 @@ fastify.register(require('choo-ssr/fastify'), {
     require('choo-bundles/ssr'), {
       public: PUBLIC_DIR,
       manifest: MANIFEST,
-      assets: {
-        js: ['/assets/common.js'],
-        css: ['/assets/common.css']
-      }
+      bundles: [{
+        name: 'common',
+        js: '/assets/common.js',
+        css: '/assets/common.css'
+      }]
     }
   ]]
 })
