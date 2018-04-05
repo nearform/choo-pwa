@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const { onChangeWith } = require('../plugins/choo-data/utils')
+const { onChangeWith } = require('choo-data/utils')
 
 const getCategoryData = async ([ params, page ], oldData) => {
   const response = await fetch(`https://choo-pwa.xyz/api/articles/${params.category}?page=${page}`)
