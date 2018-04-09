@@ -1,12 +1,12 @@
-const loki = require('lokijs')
+const Loki = require('lokijs')
 const RSSParser = require('rss-parser')
 const fastifyPlugin = require('fastify-plugin')
 
 function slugify (text) {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '')
 }
@@ -14,7 +14,7 @@ function slugify (text) {
 function parseArticle (item) {
   return {
     hed: item.title,
-    dek: item.description, //contentSnippet.replace(/&\w+;/, '').split(' ').splice(0, 25).join(' ') + ' ...',
+    dek: item.description, // contentSnippet.replace(/&\w+;/, '').split(' ').splice(0, 25).join(' ') + ' ...',
     date: Date.parse(item.isoDate),
     slug: slugify(item.title),
     contributor: item.creator,
@@ -33,7 +33,7 @@ async function setup () {
     'https://www.wired.com/feed/category/culture/latest/rss',
     'https://www.wired.com/feed/category/gear/latest/rss',
     'https://www.wired.com/feed/category/ideas/latest/rss',
-    'https://www.wired.com/feed/category/science/latest/rss',
+    'https://www.wired.com/feed/category/science/latest/rss'
     // 'http://feeds.feedburner.com/TechCrunch/JordanCrook',
     // 'http://feeds.feedburner.com/TechCrunch/Kim-maiCutler',
     // 'http://feeds.feedburner.com/TechCrunch/AnthonyHa',
@@ -46,7 +46,7 @@ async function setup () {
   const parser = new RSSParser({
     customFields: {
       item: [
-        ['media:thumbnail', 'thumbnail'],
+        ['media:thumbnail', 'thumbnail']
       ]
     }
   })
@@ -60,11 +60,11 @@ async function setup () {
 }
 
 async function dbConnector (fastify, options) {
-  const db = new loki('PWA')
+  const db = new Loki('PWA')
   const articles = db.addCollection('articles', { indices: ['slug'] })
 
   const data = await setup()
-  for (article of data) {
+  for (const article of data) {
     articles.insert(article)
   }
 

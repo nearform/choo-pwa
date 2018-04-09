@@ -7,7 +7,6 @@ var ASSETS_DIR = path.join(PUBLIC_DIR, 'assets')
 
 var MANIFEST = JSON.parse(fs.readFileSync(path.join(PUBLIC_DIR, 'manifest.json')))
 
-
 const fastify = require('fastify')({
   http2: true,
   https: {
@@ -33,7 +32,7 @@ fastify.register(require('fastify-static'), {
 })
 
 fastify.register(require('../plugins/choo-sw/fastify'), {
-  public: PUBLIC_DIR,
+  public: PUBLIC_DIR
 })
 
 fastify.register(require('choo-ssr/fastify'), {

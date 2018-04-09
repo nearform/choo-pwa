@@ -12,7 +12,7 @@ module.exports = {
   templatedUrls: {
     'app-shell': [
       'assets/common.js',
-      'assets/common.css',
+      'assets/common.css'
     ]
   },
   runtimeCaching: [{

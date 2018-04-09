@@ -10,13 +10,6 @@ const prefix = css`
   }
 `
 
-async function loadMore (state, emit) {
-  const { category, page } = state.articles
-  const response = await fetch(`http://localhost:3000/api/articles/${category}?page=${page + 1}`)
-  const data = await response.json()
-  emit('articles:loadMore', data)
-}
-
 const placeholder = {
   category: html`
     <span class="${prefix} moon-gray">
@@ -41,7 +34,7 @@ const placeholder = {
     `,
     tout: {
       src: 'https://www.pixedelic.com/themes/geode/demo/wp-content/uploads/sites/4/2014/04/placeholder.png'
-    },
+    }
   }]
 }
 

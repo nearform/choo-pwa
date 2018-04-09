@@ -1,6 +1,6 @@
 const html = require('choo-async/html')
 
-function crop(url, aspect, width) {
+function crop (url, aspect, width) {
   return url.replace('/master/', `/${aspect}/`).replace('/pass/', `/w_${width}/`)
 }
 
