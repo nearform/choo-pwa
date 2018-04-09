@@ -1,5 +1,4 @@
 const html = require('choo-async/html')
-const css = require('sheetify')
 
 const river = require('./components/river')
 

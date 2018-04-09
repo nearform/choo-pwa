@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 
 const getArticleData = async params => {
   const response = await fetch(`https://choo-pwa.xyz/api/article/${params.slug}`)
-  return await response.json()
+  return response.json()
 }
 
 function article (app) {

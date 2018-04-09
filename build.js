@@ -5,7 +5,6 @@ const watchify = require('watchify')
 const sheetify = require('sheetify')
 const exorcist = require('exorcist')
 const browserify = require('browserify')
-const splitRequire = require('split-require')
 
 const bl = require('bl')
 const through = require('through2')
@@ -47,7 +46,7 @@ b.plugin(require('choo-bundles/browserify'), {
 b.on('choo-bundles.pipeline', function (pipeline, entry, basename, manifest) {
   manifest.add('css', '/assets/' + basename.replace('.js', '.css'))
   pipeline.get('pack').unshift(exorcssist(path.resolve(assetDir, basename.replace('.js', '.css'))))
-  // pipeline.get('wrap').push(exorcist(path.resolve(assetDir, `${basename}.map`)))
+  pipeline.get('wrap').push(exorcist(path.resolve(assetDir, `${basename}.map`)))
 })
 
 b.pipeline.get('pack').unshift(exorcssist(path.resolve(assetDir, 'common.css')))
@@ -55,10 +54,9 @@ b.on('update', bundle)
 
 bundle()
 
-function bundle() {
+function bundle () {
   b.bundle().pipe(fs.createWriteStream(path.resolve(assetDir, 'common.js')))
 }
-
 
 function exorcssist (outFile) {
   const extractStream = through.obj(write, flush)
@@ -71,7 +69,7 @@ function exorcssist (outFile) {
 
   function write (chunk, enc, cb) {
     // Performance boost: don't do ast parsing unless we know it's needed
-    if (!/[insert\-css|sheetify\/insert]/.test(chunk.source)) {
+    if (!/[insert\-css|sheetify/insert]/.test(chunk.source)) {
       return cb(null, chunk)
     }
 

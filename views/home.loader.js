@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const getHomeData = async params => {
   const categories = ['business', 'culture', 'gear']
   const promises = categories.map(category => fetch(`https://choo-pwa.xyz/api/articles/${category}`).then(response => response.json()))
-  return await Promise.all(promises)
+  return Promise.all(promises)
 }
 
 function home (app) {
