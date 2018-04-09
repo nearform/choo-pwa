@@ -1,5 +1,5 @@
 const css = require('sheetify')
-const html = require('../plugins/choo-async/html')
+const html = require('choo-async/html')
 
 const prefix = css`
   :host {

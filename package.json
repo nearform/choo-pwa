@@ -17,7 +17,8 @@
     "test-deps": "dependency-check . && dependency-check . --extra --no-dev -i tachyons"
   },
   "dependencies": {
-    "choo": "git://github.com/nearform/choo.git#async-render",
+    "choo": "^6.11.0-preview1",
+    "choo-async": "^0.1.1",
     "choo-bundles": "^0.1.0",
     "choo-data": "^0.1.0",
     "choo-service-worker": "^2.4.0",

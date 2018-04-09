@@ -1,4 +1,4 @@
-const h = require('../plugins/choo-async/html')
+const html = require('choo-async/html')
 const raw = require('choo/html/raw')
 
 const css = require('sheetify')
@@ -10,12 +10,12 @@ const prefix = css`
 `
 
 const placeholder = {
-  hed: h`
+  hed: html`
     <span class="${prefix} moon-gray">
       ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
     </span>
   `,
-  contributor: h`
+  contributor: html`
     <span class="${prefix} moon-gray">
       ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
     </span>
@@ -23,7 +23,7 @@ const placeholder = {
   tout: {
     src: 'https://www.pixedelic.com/themes/geode/demo/wp-content/uploads/sites/4/2014/04/placeholder.png'
   },
-  body: h`
+  body: html`
     <div class="${prefix} moon-gray">
       ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
       <br />
@@ -36,7 +36,7 @@ const placeholder = {
   `
 }
 
-const article = (article = placeholder) => h`
+const article = (article = placeholder) => html`
   <article class="mw7 center avenir">
     <div class="pb4 bb mb4 tc">
       <h1 class="f3 f2-m f1-l lh-title baskerville">${article.hed}</h1>
