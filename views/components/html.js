@@ -1,4 +1,4 @@
-const h = require('../../plugins/choo-async/html')
+const h = require('choo-async/html')
 
 function html (head, body) {
   return (state, emit) => {

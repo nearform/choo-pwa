@@ -1,7 +1,7 @@
-const h = require('../../plugins/choo-async/html')
+const html = require('choo-async/html')
 
 function layout (children) {
-  return (state, emit) => h`
+  return (state, emit) => html`
     <div>
       <header class="bg-white black-80 tc pv4 avenir">
         <h1 class="mt2 mb0 baskerville i fw1 f1">Amazing PWA</h1>

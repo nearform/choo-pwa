@@ -1,4 +1,4 @@
-const h = require('../plugins/choo-async/html')
+const html = require('choo-async/html')
 const raw = require('choo/html/raw')
 const css = require('sheetify')
 
@@ -18,23 +18,23 @@ async function loadMore (state, emit) {
 }
 
 const placeholder = {
-  category: h`
+  category: html`
     <span class="${prefix} moon-gray">
       ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
     </span>
   `,
   data: [{
-    hed: h`
+    hed: html`
       <span class="${prefix} moon-gray">
         ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
       </span>
     `,
-    dek: h`
+    dek: html`
       <span class="${prefix} moon-gray">
         ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
       </span>
     `,
-    contributor: h`
+    contributor: html`
       <span class="${prefix} moon-gray">
         ${raw('&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;&lhblk;')}
       </span>
@@ -45,7 +45,7 @@ const placeholder = {
   }]
 }
 
-const category = (category = placeholder, loadMore) => h`
+const category = (category = placeholder, loadMore) => html`
   <section class="mw7 center avenir">
     <h2 class="baskerville fw1 ph3 ph0-l ttc">${category.category}</h2>
     ${river(category.data)}
