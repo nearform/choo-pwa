@@ -31,23 +31,23 @@ jobs:
       #- run: yarn test
 
       # Install AWS's CLI
-#      - run:
-#          name: Install AWS CLI
-#          command: |
-#            sudo apt-get -y install python-dev
-#            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-#            unzip awscli-bundle.zip
-#            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-#
-#      # Build the Docker container
-#      - run:
-#          name: Build the Docker container
-#          command: |
-#            docker build -t 711655675495.dkr.ecr.us-east-1.amazonaws.com/react-pwa:latest .
-#
-#      # Push the built containers to AWS ECR
-#      - run:
-#          name: Push the Docker container
-#          command: |
-#            eval $(aws ecr get-login --no-include-email --region us-east-1)
-#            docker push 711655675495.dkr.ecr.us-east-1.amazonaws.com/react-pwa:latest
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo apt-get -y install python-dev
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+      # Build the Docker container
+      - run:
+          name: Build the Docker container
+          command: |
+            docker build -t 711655675495.dkr.ecr.us-east-1.amazonaws.com/choo-pwa:latest .
+
+      # Push the built containers to AWS ECR
+      - run:
+          name: Push the Docker container
+          command: |
+            eval $(aws ecr get-login --no-include-email --region us-east-1)
+            docker push 711655675495.dkr.ecr.us-east-1.amazonaws.com/choo-pwa:latest
