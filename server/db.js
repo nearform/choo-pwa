@@ -20,7 +20,7 @@ function parseArticle (item) {
     contributor: item.creator,
     category: item.categories[0].toLowerCase(),
     tout: {
-      src: item.thumbnail['$'].url,
+      src: item.thumbnail ? item.thumbnail['$'].url : '',
       alt: ''
     },
     body: item.content

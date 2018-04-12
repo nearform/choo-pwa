@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node server",
-    "prebuild": "rm -rf public && mkdir -p public/assets",
+    "rimraf": "rm -rf public && mkdir -p public/assets",
+    "prebuild": "npm run rimraf",
     "build": "npm run build:js && npm run build:sw",
     "build:js": "node build.js",
     "build:sw": "workbox generate:sw",
+    "prewatch": "npm run rimraf",
     "watch": "run-p watch:*",
     "watch:client": "node build.js watch",
     "watch:server": "nodemon server",
