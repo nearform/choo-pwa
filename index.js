@@ -2,15 +2,16 @@ const choo = require('choo')
 const css = require('sheetify')
 
 const sw = require('./plugins/choo-sw')
-const ssr = require('./plugins/choo-ssr')
-const data = require('./plugins/choo-data')
-const bundles = require('./plugins/choo-bundles')
+const ssr = require('choo-ssr')
+const data = require('choo-data')
+const async = require('choo-async')
+const bundles = require('choo-bundles')
 const devtools = require('choo-devtools')
 
 const html = require('./views/components/html')
-const head = require('./views/components/head')
-const body = require('./views/components/body')
 const layout = require('./views/components/layout')
+
+const error = require('./views/error')
 
 const home = require('./views/home.loader')
 const about = require('./views/about.loader')
@@ -20,7 +21,7 @@ const category = require('./views/category.loader')
 css('tachyons')
 
 function main () {
-  const app = choo()
+  const app = async(choo())
 
   app.use(sw())
   app.use(ssr())
@@ -33,16 +34,21 @@ function main () {
 
   const page = content => (
     html(
-      head(
-        ssr.head(),
-        bundles.head()
+      ssr.head(
+        ssr.state(),
+        bundles.assets()
       ),
-      body(layout(content))
+      ssr.body(
+        async.catch(
+          layout(content),
+          error()
+        )
+      )
     )
   )
 
   app.route('/', page(home(app)))
-  app.route('/about/', page(about(app)))
+  app.route('/about', page(about(app)))
   app.route('/article/:slug', page(article(app)))
   app.route('/category/:category', page(category(app)))
   app.route('/app-shell', page(() => {}))

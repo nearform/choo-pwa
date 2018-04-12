@@ -11,8 +11,8 @@ module.exports = {
   navigateFallback: '/app-shell',
   templatedUrls: {
     'app-shell': [
-      'assets/index.js',
-      'assets/index.css',
+      'assets/common.js',
+      'assets/common.css'
     ]
   },
   runtimeCaching: [{

@@ -1,12 +1,12 @@
-const h = require('../../plugins/choo-async/html')
+const html = require('choo-async/html')
 
-function crop(url, aspect, width) {
+function crop (url, aspect, width) {
   return url.replace('/master/', `/${aspect}/`).replace('/pass/', `/w_${width}/`)
 }
 
-const river = (articles = []) => h`
+const river = (articles = []) => html`
   <div>
-    ${articles.map(article => h`
+    ${articles.map(article => html`
       <article class="bt bb b--black-10">
         <a class="db pv4 ph3 ph0-l no-underline black dim" href="/article/${article.slug}">
           <div class="flex flex-column flex-row-ns">
