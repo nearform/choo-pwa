@@ -51,3 +51,10 @@ jobs:
           command: |
             eval $(aws ecr get-login --no-include-email --region us-east-1)
             docker push 711655675495.dkr.ecr.us-east-1.amazonaws.com/choo-pwa:latest
+
+      # Trigger a AWS ECS service update that will force the cluster to
+      # re-pull the Docker container(s), to get the 'latest' tagged version
+      - run:
+          name: Trigger a ECS deploy
+          command: |
+            aws ecs update-service --region us-east-1 --cluster choo-pwa-cluster --service choo-pwa-service --force-new-deployment
