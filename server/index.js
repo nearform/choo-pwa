@@ -6,8 +6,8 @@ const fastify = require('fastify')({
   http2: true,
   https: {
     allowHTTP1: true,
-    key: fs.readFileSync(path.join(__dirname, '../https', 'fastify.key'), 'ascii'),
-    cert: fs.readFileSync(path.join(__dirname, '../https', 'fastify.crt'), 'ascii')
+    key: fs.readFileSync(path.join(__dirname, '../https', 'choo-pwa.nearform.com.key'), 'ascii'),
+    cert: fs.readFileSync(path.join(__dirname, '../https', 'choo-pwa.nearform.com.crt'), 'ascii')
   }
 })
 
