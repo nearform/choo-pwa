@@ -19,10 +19,10 @@
   "dependencies": {
     "choo": "^6.11.0-preview1",
     "choo-async": "^0.1.1",
-    "choo-bundles": "^0.1.0",
+    "choo-bundles": "^0.2.1",
     "choo-data": "^0.1.0",
     "choo-service-worker": "^2.4.0",
-    "choo-ssr": "^0.1.0",
+    "choo-ssr": "^0.2.0",
     "cors": "^2.8.4",
     "deep-equal": "^1.0.1",
     "fastify": "^1.0.0-rc.2",

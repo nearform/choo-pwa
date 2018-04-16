@@ -50,6 +50,7 @@ b.on('choo-bundles.pipeline', function (pipeline, entry, basename, manifest) {
 })
 
 b.pipeline.get('pack').unshift(exorcssist(path.resolve(assetDir, 'common.css')))
+b.pipeline.get('wrap').push(exorcist(path.resolve(assetDir, `common.js.map`)))
 b.on('update', bundle)
 
 bundle()

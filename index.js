@@ -10,6 +10,7 @@ const devtools = require('choo-devtools')
 
 const html = require('./views/components/html')
 const layout = require('./views/components/layout')
+const noscript = require('./views/components/noscript')
 
 const error = require('./views/error')
 
@@ -42,7 +43,8 @@ function main () {
         async.catch(
           layout(content),
           error()
-        )
+        ),
+        noscript()
       )
     )
   )

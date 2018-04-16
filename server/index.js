@@ -11,8 +11,8 @@ const fastify = require('fastify')({
   http2: true,
   https: {
     allowHTTP1: true,
-    key: fs.readFileSync(path.join(__dirname, '../https', 'choo-pwa.nearform.com.key'), 'ascii'),
-    cert: fs.readFileSync(path.join(__dirname, '../https', 'choo-pwa.nearform.com.crt'), 'ascii')
+    key: fs.readFileSync(path.join(__dirname, '../https', 'fastify.key'), 'ascii'),
+    cert: fs.readFileSync(path.join(__dirname, '../https', 'fastify.crt'), 'ascii')
   }
 })
 
@@ -41,6 +41,7 @@ fastify.register(require('choo-ssr/fastify'), {
   app: require('../index'),
   plugins: [[
     require('choo-bundles/ssr'), {
+      http2: true,
       public: PUBLIC_DIR,
       manifest: MANIFEST,
       bundles: [{

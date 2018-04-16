@@ -17,6 +17,9 @@ function layout (children) {
       </header>
       <main>
         ${children(state, emit)}
+        <noscript>
+          JavaScript is recommended to be enabled for the best experience 
+        </noscript>
       </main>
     </div>
   `
