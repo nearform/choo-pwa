@@ -26,6 +26,8 @@ fastify.get('/favicon.ico', async () => {
   return null
 })
 
+fastify.register(require('fastify-compress'), { threshold: 0 })
+
 fastify.register(require('fastify-static'), {
   root: ASSETS_DIR,
   prefix: '/assets/'
