@@ -5,7 +5,7 @@ function html (head, body) {
     const pBody = Promise.resolve(body(state, emit))
     const pHead = pBody.then(() => head(state, emit)) // resolve head once body is resolved
     return h`
-      <html>
+      <html lang="en">
         ${pHead}
         ${pBody}
       </html>

@@ -11,7 +11,7 @@ const devtools = require('choo-devtools')
 const html = require('./views/components/html')
 const layout = require('./views/components/layout')
 const noscript = require('./views/components/noscript')
-const manifest = require('./views/components/manifest')
+const head = require('./views/components/head')
 
 const error = require('./views/error')
 
@@ -39,7 +39,7 @@ function main () {
       ssr.head(
         ssr.state(),
         bundles.assets(),
-        manifest()
+        head()
       ),
       ssr.body(
         async.catch(

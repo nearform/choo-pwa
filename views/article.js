@@ -36,6 +36,10 @@ const placeholder = {
   `
 }
 
+function crop (url, aspect, width) {
+  return url.replace('/master/', `/${aspect}/`).replace('/pass/', `/w_${width}/`)
+}
+
 const article = (article = placeholder) => html`
   <article class="mw7 center avenir">
     <div class="pb4 bb mb4 tc">
@@ -43,7 +47,7 @@ const article = (article = placeholder) => html`
       <cite class="f6 ttu fs-normal">By: ${article.contributor}</cite>
     </div>
     <div class="aspect-ratio aspect-ratio--16x9 mb4">
-      <div class="aspect-ratio--object cover" style="background:url(${article.tout.src}) center;"></div>
+      <div class="aspect-ratio--object cover" style="background:url(${crop(article.tout.src, '6:4', '768')}) center;"></div>
     </div>
     <p class="lh-copy">
       ${article.body}

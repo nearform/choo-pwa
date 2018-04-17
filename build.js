@@ -56,6 +56,7 @@ b.on('update', bundle)
 bundle()
 
 fs.createReadStream('manifest.webmanifest').pipe(fs.createWriteStream(path.resolve(assetDir, 'manifest.webmanifest')))
+fs.createReadStream('icon.png').pipe(fs.createWriteStream(path.resolve(assetDir, 'icon.png')))
 
 function bundle () {
   b.bundle().pipe(fs.createWriteStream(path.resolve(assetDir, 'common.js')))
