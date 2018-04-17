@@ -55,6 +55,8 @@ b.on('update', bundle)
 
 bundle()
 
+fs.createReadStream('manifest.webmanifest').pipe(fs.createWriteStream(path.resolve(assetDir, 'manifest.webmanifest')))
+
 function bundle () {
   b.bundle().pipe(fs.createWriteStream(path.resolve(assetDir, 'common.js')))
 }
