@@ -25,13 +25,13 @@ const prefix = css`
 `
 
 const stories = (stories = placeholders, title, nextPage) => html`
-  <div class=${prefix}>
+  <main class=${prefix}>
     ${title && html`<h1 class="title">${title}</h1>`}
     ${storyList(stories)}
     <p class="more">
       <a href=${nextPage}>More</a>
     </p>
-  </div>
+  </main>
 `
 
 module.exports = stories

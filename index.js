@@ -40,7 +40,7 @@ function main () {
     html(
       ssr.head(
         head(),
-        ssr.state(),
+        // bundles.preloads(),
         bundles.assets()
       ),
       ssr.body(
@@ -48,7 +48,8 @@ function main () {
           layout(content),
           error()
         ),
-        noscript()
+        noscript(),
+        ssr.state(),
       )
     )
   )

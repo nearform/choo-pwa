@@ -33,7 +33,7 @@ const prefix = css`
 
   :host > .nav {
     color: #000;
-    font-size: 9pt;
+    font-size: 12px;
     margin-left: 8px;
   }
 

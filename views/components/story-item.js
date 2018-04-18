@@ -8,7 +8,7 @@ const prefix = css`
   }
 
   :host > .byline {
-    color: #828282;
+    color: #4a4a4a;
     font-size: 7pt;
   }
 `

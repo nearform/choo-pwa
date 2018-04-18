@@ -55,7 +55,9 @@ const timeAgo = isoDate => {
 
 const getTitle = title => {
   if (!title) return
-  return title.split('in "')[1].replace(/"/g, '')
+  const split = title.split('in "')
+  if (!split || split.length < 2) return title
+  return split[1].replace(/"/g, '')
 }
 
 const commentItem = (comment = {}) => html`
