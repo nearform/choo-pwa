@@ -15,12 +15,14 @@ const head = require('./views/components/head')
 
 const error = require('./views/error')
 
-const home = require('./views/home.loader')
-const about = require('./views/about.loader')
-const article = require('./views/article.loader')
-const category = require('./views/category.loader')
+const ask = require('./views/ask')
+const show = require('./views/show')
+const jobs = require('./views/jobs')
+const home = require('./views/home')
+const newest = require('./views/newest')
+const comments = require('./views/comments')
 
-css('tachyons')
+css('./index.css')
 
 function main () {
   const app = async(choo())
@@ -52,9 +54,17 @@ function main () {
   )
 
   app.route('/', page(home(app)))
-  app.route('/about', page(about(app)))
-  app.route('/article/:slug', page(article(app)))
-  app.route('/category/:category', page(category(app)))
+  app.route('/page/:page', page(home(app)))
+  app.route('/newest', page(newest(app)))
+  app.route('/newest/page/:page', page(newest(app)))
+  app.route('/newcomments', page(comments(app)))
+  app.route('/newcomments/page/:page', page(comments(app)))
+  app.route('/show', page(show(app)))
+  app.route('/show/page/:page', page(show(app)))
+  app.route('/ask', page(ask(app)))
+  app.route('/ask/page/:page', page(ask(app)))
+  app.route('/jobs', page(jobs(app)))
+  app.route('/jobs/page/:page', page(jobs(app)))
   app.route('/app-shell', page(() => {}))
 
   return app

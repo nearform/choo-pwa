@@ -11,9 +11,12 @@ module.exports = {
   navigateFallback: '/app-shell',
   navigateFallbackWhitelist: [
     /^\/$/,
-    /^\/about/,
-    /^\/article/,
-    /^\/category/
+    /^\/page/,
+    /^\/newest/,
+    /^\/newcomments/,
+    /^\/show/,
+    /^\/ask/,
+    /^\/jobs/
   ],
   templatedUrls: {
     'app-shell': [
