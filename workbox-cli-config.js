@@ -9,6 +9,12 @@ module.exports = {
     'assets/*.css'
   ],
   navigateFallback: '/app-shell',
+  navigateFallbackWhitelist: [
+    /^\/$/,
+    /^\/about/,
+    /^\/article/,
+    /^\/category/
+  ],
   templatedUrls: {
     'app-shell': [
       'assets/common.js',

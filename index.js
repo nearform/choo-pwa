@@ -37,9 +37,9 @@ function main () {
   const page = content => (
     html(
       ssr.head(
+        head(),
         ssr.state(),
-        bundles.assets(),
-        head()
+        bundles.assets()
       ),
       ssr.body(
         async.catch(

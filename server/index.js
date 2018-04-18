@@ -9,8 +9,8 @@ var ASSETS_DIR = path.join(PUBLIC_DIR, 'assets')
 var MANIFEST = JSON.parse(fs.readFileSync(path.join(PUBLIC_DIR, 'manifest.json')))
 
 const fastify = require('fastify')({
-  logger: true,
-  http2: true,
+  // logger: true,
+  // http2: true,
   https: {
     allowHTTP1: true,
     key: fs.readFileSync(path.join(__dirname, '../https', 'fastify.key'), 'ascii'),
