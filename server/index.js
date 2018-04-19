@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
-const http = require('http')
 
 var PUBLIC_DIR = path.join(__dirname, '../public')
 var ASSETS_DIR = path.join(PUBLIC_DIR, 'assets')
@@ -52,15 +51,10 @@ fastify.register(require('choo-ssr/fastify'), {
   ]]
 })
 
-fastify.listen(8443, '0.0.0.0', function (err) {
+fastify.listen(3000, '0.0.0.0', function (err) {
   if (err) {
     console.log(err)
     process.exit(1)
   }
   console.log(`server listening on ${fastify.server.address().port}`)
 })
-
-http.createServer(function (req, res) {
-  res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url })
-  res.end()
-}).listen(8080)
