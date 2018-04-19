@@ -1,52 +1,93 @@
-
-const PAGE_SIZE = 5
+const fetch = require('node-fetch')
+const Parser = require('rss-parser')
+const sanitizeHtml = require('sanitize-html')
+const { URLSearchParams } = require('url')
 
 async function routes (fastify, options) {
-  const db = fastify.db
-  const articles = db.getCollection('articles')
-
-  const opts = {
-    schema: {
-      params: {
-        category: { type: 'string' }
-      },
-      querystring: {
-        page: { type: 'integer' }
-      }
+  fastify.get('/api/stories', async (request, reply) => {
+    const { filter, page = 0 } = request.query || {}
+    if (filter === 'comments') {
+      return RSSResponse(page)
     }
+    return graphQLResponse(filter, page)
+  })  
+}
+
+function sanitizeItemContent (items) {
+  return items.map(({content, ...rest}) => {
+    let cleanContent = sanitizeHtml(content)
+    return {
+      content: cleanContent,
+      ...rest
+    }
+  })
+}
+
+function RSSResponse (page) {
+  const RSS_URL = 'https://hnrss.org/newcomments?count=100'
+  const parser = new Parser()
+  return parser.parseURL(RSS_URL)
+    .then(feed => {
+      let startingItem = page ? (page - 1) * 30 : 0
+      const items = feed.items
+        .filter(item => item.title)
+        .slice(startingItem, startingItem + 30)
+        return sanitizeItemContent(items)
+    })
+}
+
+async function graphQLResponse (filter, page) {
+  const API_URL = 'https://www.graphqlhub.com/graphql/'
+  const offset = page > 1 ? (page - 1) * 30 : 0
+  let queryType
+
+  switch (filter) {
+    case 'show':
+      queryType = 'showStories'
+      break
+    case 'ask':
+      queryType = 'askStories'
+      break
+    case 'jobs':
+      queryType = 'jobStories'
+      break
+    case 'rank':
+      queryType = 'newStories'
+      break
+    case 'new':
+      queryType = 'newStories'
+      break
+    case 'best':
+    default:
+      queryType = 'topStories'
   }
 
-  fastify.get('/api/articles/:category', opts, async (request, reply) => {
-    try {
-      const { category = 'all' } = request.params
-      const { page = 0 } = request.query
-
-      const data = articles.chain()
-        .find({ category })
-        .offset(page * PAGE_SIZE)
-        .limit(PAGE_SIZE)
-        .data()
-
-      return {
-        data,
-        category,
-        page
+  const query = `
+    query {
+      hn {
+        ${queryType}(limit: 30, offset: ${offset}) {
+          by {
+            id
+          }
+          dead
+          deleted
+          id
+          kids {
+            id
+          }
+          score
+          text
+          title
+          type
+          url
+        }
       }
-    } catch (error) {
-      console.log(error)
-      return new Error('Something went wrong')
-    }
-  })
+    }`
 
-  fastify.get('/api/article/:slug', async (request, reply) => {
-    try {
-      const { slug } = request.params
-      return articles.findOne({ slug })
-    } catch (error) {
-      console.log(error)
-      return new Error('Something went wrong')
-    }
-  })
+  const params = new URLSearchParams({ query })
+  const response = await fetch(API_URL, { method: 'POST', body: params })
+  const result = await response.json()
+  return result.data.hn[queryType]
 }
 
 module.exports = routes

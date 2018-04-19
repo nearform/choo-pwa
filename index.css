@@ -1,0 +1,23 @@
+body {
+  color: #828282;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  body {
+    margin: 8px auto;
+    width: 85%
+  }
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #828282;
+}

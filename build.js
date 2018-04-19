@@ -5,7 +5,6 @@ const watchify = require('watchify')
 const sheetify = require('sheetify')
 const exorcist = require('exorcist')
 const browserify = require('browserify')
-const splitRequire = require('split-require')
 
 const bl = require('bl')
 const through = require('through2')
@@ -14,6 +13,9 @@ const staticModule = require('static-module')
 
 const PUBLIC_DIR = 'public'
 const ASSETS_DIR = 'assets'
+
+// var PUBLIC_DIR = path.resolve(__dirname, '/public')
+// var ASSETS_DIR = path.resolve(PUBLIC_DIR, '/assets')
 
 const b = browserify({
   debug: true,
@@ -30,52 +32,48 @@ if (process.argv.includes('watch')) {
 if (process.env.NODE_ENV === 'production') {
   b.plugin(tinyify)
 }
-
 b.transform(sheetify)
-b.plugin(splitRequire, {
-  out: path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR),
-  public: '/assets/',
-  filename: entry => path.parse(entry.file).base,
-})
-b.on('split.pipeline', function (pipeline, entry, basename) {
-  // Source maps
-  pipeline.get('wrap').push(exorcist(path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, `${basename}.map`)))
-  // CSS
-  const outFile = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, basename.replace('.js', '.css'))
-  cssExtract(pipeline.get('pack'), outFile)
+
+var assetDir = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR)
+
+b.plugin(require('choo-bundles/browserify'), {
+  output: path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR),
+  manifest: path.resolve(__dirname, PUBLIC_DIR, 'manifest.json'),
+  prefix: '/assets/',
+  filename: entry => path.parse(entry.file).base
 })
 
-b.on('bundle', function (bundle) {
-  const outFile = path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.css')
-  cssExtract(b.pipeline.get('pack'), outFile)
+b.on('choo-bundles.pipeline', function (pipeline, entry, basename, manifest) {
+  manifest.add('css', '/assets/' + basename.replace('.js', '.css'))
+  pipeline.get('pack').unshift(exorcssist(path.resolve(assetDir, basename.replace('.js', '.css'))))
+  pipeline.get('wrap').push(exorcist(path.resolve(assetDir, `${basename}.map`)))
 })
 
-// bundling
-
+b.pipeline.get('pack').unshift(exorcssist(path.resolve(assetDir, 'common.css')))
+b.pipeline.get('wrap').push(exorcist(path.resolve(assetDir, `common.js.map`)))
 b.on('update', bundle)
 
 bundle()
 
-function bundle() {
-  b.bundle()
-    .pipe(exorcist(path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.js.map')))
-    .pipe(fs.createWriteStream(path.resolve(__dirname, PUBLIC_DIR, ASSETS_DIR, 'index.js')));
+fs.createReadStream('manifest.webmanifest').pipe(fs.createWriteStream(path.resolve(assetDir, 'manifest.webmanifest')))
+fs.createReadStream('icon.png').pipe(fs.createWriteStream(path.resolve(assetDir, 'icon.png')))
+
+function bundle () {
+  b.bundle().pipe(fs.createWriteStream(path.resolve(assetDir, 'common.js')))
 }
 
-// 
-
-function cssExtract (handle, outFile) {
+function exorcssist (outFile) {
   const extractStream = through.obj(write, flush)
   const writeStream = (typeof outFile === 'function')
     ? outFile()
     : bl(writeComplete)
 
   // run before the "label" step in browserify pipeline
-  handle.unshift(extractStream)
+  return extractStream
 
   function write (chunk, enc, cb) {
     // Performance boost: don't do ast parsing unless we know it's needed
-    if (!/[insert\-css|sheetify\/insert]/.test(chunk.source)) {
+    if (!/[insert\-css|sheetify/insert]/.test(chunk.source)) {
       return cb(null, chunk)
     }
 

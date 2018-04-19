@@ -1,17 +1,14 @@
-const h = require('../plugins/choo-async/html')
-const css = require('sheetify')
+const getDataFactory = require('../data')
 
-const river = require('./components/river')
+const getHomeData = getDataFactory('top')
 
-const home = (categories = []) => h`
-  <section class="mw7 center avenir">
-    ${categories.map(articles => h`
-      <section>
-        <h2 class="baskerville fw1 ph3 ph0-l ttc">${articles.category}</h2>
-        ${river(articles.data)}
-      </section>
-    `)}
-  </section>
-`
+const home = app => async (state, emit) => {
+  const page = Number(state.params.page || 1)
+  const [ bundle, data ] = await Promise.all([
+    app.bundles.load('./components/stories'),
+    app.data.load('home', getHomeData, page)
+  ])
+  return bundle(data, null, `/page/${page + 1}`)
+}
 
 module.exports = home

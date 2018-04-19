@@ -4,7 +4,7 @@ async function routes (fastify, options) {
   const opts = {
     schema: {
       querystring: {
-        url: { type: 'string' },
+        url: { type: 'string' }
       }
     }
   }

@@ -2,25 +2,30 @@ const choo = require('choo')
 const css = require('sheetify')
 
 const sw = require('./plugins/choo-sw')
-const ssr = require('./plugins/choo-ssr')
-const data = require('./plugins/choo-data')
-const bundles = require('./plugins/choo-bundles')
+const ssr = require('choo-ssr')
+const data = require('choo-data')
+const async = require('choo-async')
+const bundles = require('choo-bundles')
 const devtools = require('choo-devtools')
 
 const html = require('./views/components/html')
-const head = require('./views/components/head')
-const body = require('./views/components/body')
 const layout = require('./views/components/layout')
+const noscript = require('./views/components/noscript')
+const head = require('./views/components/head')
 
-const home = require('./views/home.loader')
-const about = require('./views/about.loader')
-const article = require('./views/article.loader')
-const category = require('./views/category.loader')
+const error = require('./views/error')
 
-css('tachyons')
+const ask = require('./views/ask')
+const show = require('./views/show')
+const jobs = require('./views/jobs')
+const home = require('./views/home')
+const newest = require('./views/newest')
+const comments = require('./views/comments')
+
+css('./index.css')
 
 function main () {
-  const app = choo()
+  const app = async(choo())
 
   app.use(sw())
   app.use(ssr())
@@ -33,18 +38,34 @@ function main () {
 
   const page = content => (
     html(
-      head(
-        ssr.head(),
-        bundles.head()
+      ssr.head(
+        head(),
+        // bundles.preloads(),
+        bundles.assets()
       ),
-      body(layout(content))
+      ssr.body(
+        async.catch(
+          layout(content),
+          error()
+        ),
+        noscript(),
+        ssr.state(),
+      )
     )
   )
 
   app.route('/', page(home(app)))
-  app.route('/about/', page(about(app)))
-  app.route('/article/:slug', page(article(app)))
-  app.route('/category/:category', page(category(app)))
+  app.route('/page/:page', page(home(app)))
+  app.route('/newest', page(newest(app)))
+  app.route('/newest/page/:page', page(newest(app)))
+  app.route('/newcomments', page(comments(app)))
+  app.route('/newcomments/page/:page', page(comments(app)))
+  app.route('/show', page(show(app)))
+  app.route('/show/page/:page', page(show(app)))
+  app.route('/ask', page(ask(app)))
+  app.route('/ask/page/:page', page(ask(app)))
+  app.route('/jobs', page(jobs(app)))
+  app.route('/jobs/page/:page', page(jobs(app)))
   app.route('/app-shell', page(() => {}))
 
   return app

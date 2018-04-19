@@ -9,10 +9,19 @@ module.exports = {
     'assets/*.css'
   ],
   navigateFallback: '/app-shell',
+  navigateFallbackWhitelist: [
+    /^\/$/,
+    /^\/page/,
+    /^\/newest/,
+    /^\/newcomments/,
+    /^\/show/,
+    /^\/ask/,
+    /^\/jobs/
+  ],
   templatedUrls: {
     'app-shell': [
-      'assets/index.js',
-      'assets/index.css',
+      'assets/common.js',
+      'assets/common.css'
     ]
   },
   runtimeCaching: [{
