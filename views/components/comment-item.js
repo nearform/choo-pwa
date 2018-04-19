@@ -28,6 +28,10 @@ const prefix = css`
 `
 
 const timeAgo = isoDate => {
+  if (!isoDate) {
+    return ' some time ago'
+  }
+
   var seconds = Math.floor((new Date() - Date.parse(isoDate)) / 1000)
   var interval = Math.floor(seconds / 31536000)
 

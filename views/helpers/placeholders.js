@@ -2,6 +2,7 @@ const line = (min, max) => '▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂�
 
 const placeholders = Array.apply(null, Array(30)).map(() => ({
   title: line(10, 19),
+  content: line(10, 19),
   by: {
     id: line(7, 10)
   }
