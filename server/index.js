@@ -40,7 +40,7 @@ fastify.register(require('choo-ssr/fastify'), {
   app: require('../index'),
   plugins: [[
     require('choo-bundles/ssr'), {
-      http2: true,
+      http2push: true,
       public: PUBLIC_DIR,
       manifest: MANIFEST,
       bundles: [{
