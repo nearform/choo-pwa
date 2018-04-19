@@ -18,6 +18,7 @@ const fastify = require('fastify')({
 })
 
 fastify.use(cors())
+fastify.register(require('fastify-compress'))
 
 fastify.register(require('./api'))
 fastify.register(require('./images'))

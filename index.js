@@ -40,7 +40,7 @@ function main () {
     html(
       ssr.head(
         head(),
-        // bundles.preloads(),
+        bundles.preloads(),
         bundles.assets()
       ),
       ssr.body(
