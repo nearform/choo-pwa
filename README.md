@@ -1,14 +1,26 @@
-# Choo-PWA
-PWA build with Choo and Fastify
+# Choo PWA
+PWA built with Choo and Fastify
 
-Demo: https://choo-pwa.xyz
+Demo: https://choo-pwa.nearform.com/
 
-Features:
-- Dynamic code splitting
+Features: 
+- Dynamic code splitting 
 - Server side renderering
 - HTTP/2 push 
 - App shell model
 - Service worker with asset pre-caching
+
+Modules used:
+- [choo](https://github.com/choojs/choo) - 4kb frontend framework
+- [choo-async](https://github.com/nearform/choo-async) - Asynchronous rendering with Choo
+- [choo-ssr](https://github.com/nearform/choo-ssr) - Server side renderering with Choo and Fastify
+- [choo-bundles](https://github.com/nearform/choo-bundles) - Dynamic code splitting with SSR and HTTP/2 push support
+- [choo-data](https://github.com/nearform/choo-data) - Data fetching with SSR support
+- [fastify](https://github.com/fastify/fastify) - Fast and low overhead web framework
+- [fastify-static](https://github.com/fastify/fastify-static) - Fastify plugin for serving static files
+- [fastify-compress](https://github.com/fastify/fastify-compress) - Fastify plugin for compression utils
+- [Workbox](https://developers.google.com/web/tools/workbox/) - Library for best practices when working with service workers
+
 
 ## Quick start
 
